@@ -7,16 +7,16 @@
 
 ## Content
 - [ ] Safer Memory Allocator
-- [ ] Memory Utils
+- [ ] Memory Utilities
 - [ ] Vec (Dynamic Array)
 - [ ] Stack
 - [ ] Queue
-- [ ] String Utils
+- [ ] String Utilities
 - [ ] UTF-8 Compatible Strings
 - [ ] Linked List
 - [ ] Hash Functions (FNV-1a, DJB2, SDBM, Murmur3)
 - [ ] HashMap
 - [ ] Path Utilities
 - [ ] Command Utilities
-- [ ] Base64
+- [ ] Base64 Encoder/Decoder
 - [ ] Much More Soon
