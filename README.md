@@ -9,6 +9,7 @@
 - [ ] Safer Memory Allocator
 - [ ] Memory Utilities
 - [ ] Vec (Dynamic Array)
+- [ ] Result Type
 - [ ] Stack
 - [ ] Queue
 - [ ] String Utilities
