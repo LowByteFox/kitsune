@@ -14,6 +14,7 @@
 - [ ] String Utilities
 - [ ] UTF-8 Compatible Strings
 - [ ] Linked List
+- [ ] Tree Structures (Binary Tree, BST, Trie - 3 variants)
 - [ ] Hash Functions (FNV-1a, DJB2, SDBM, Murmur3)
 - [ ] HashMap
 - [ ] Path Utilities
