@@ -1,25 +1,27 @@
 #include <alloc/basic.h>
+#include <numbers.h>
+
 #include <assert.h>
 #include <stddef.h>
 #include <stdlib.h>
 
-#define MV(ptr, op) ((unsigned char*) ptr) op sizeof(size_t)
+#define MV(ptr, op) ((u8*) ptr) op sizeof(usize)
 
 static void *
-allocate(struct kitsune_allocator *a, size_t size)
+allocate(struct kitsune_allocator *a, usize size)
 {
         (void) a;
 
-        void *ptr = malloc(size + sizeof(size_t));
+        void *ptr = malloc(size + sizeof(usize));
         if (ptr == NULL)
                 return ptr;
 
-        *(size_t*) ptr = size;
+        *(usize*) ptr = size;
         return MV(ptr, +);
 }
 
 static void *
-reallocate(struct kitsune_allocator *a, void *ptr, size_t size)
+reallocate(struct kitsune_allocator *a, void *ptr, usize size)
 {
         (void) a;
 
@@ -27,11 +29,11 @@ reallocate(struct kitsune_allocator *a, void *ptr, size_t size)
                 return NULL;
         void *orig = MV(ptr, -);
 
-        orig = realloc(orig, size + sizeof(size_t));
+        orig = realloc(orig, size + sizeof(usize));
         if (orig == NULL)
                 return NULL;
 
-        *(size_t*) orig = size;
+        *(usize*) orig = size;
         
         return MV(orig, +);
 }
@@ -47,10 +49,10 @@ destroy(struct kitsune_allocator *a, void *ptr)
         free(orig);
 }
 
-size_t
+usize
 kitsune_basic_allocated(void *ptr)
 {
-        return ptr == NULL ? 0 : *(size_t*) (MV(ptr, -));
+        return ptr == NULL ? 0 : *(usize*) (MV(ptr, -));
 }
 
 #undef MV

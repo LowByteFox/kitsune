@@ -1,18 +1,18 @@
 #ifndef _ALLOCATOR_H_
 #define _ALLOCATOR_H_
 
-#include <stddef.h>
+#include <numbers.h>
 
 struct kitsune_allocator {
-        void *(*alloc)(struct kitsune_allocator *const, size_t);
-        void *(*resize)(struct kitsune_allocator *const, void*, size_t);
+        void *(*alloc)(struct kitsune_allocator *const, usize);
+        void *(*resize)(struct kitsune_allocator *const, void*, usize);
         void (*free)(struct kitsune_allocator *const, void*);
         void *context;
 };
 
-void    *kitsune_allocator_alloc(struct kitsune_allocator *const, size_t);
+void    *kitsune_allocator_alloc(struct kitsune_allocator *const, usize);
 void    *kitsune_allocator_resize(struct kitsune_allocator *const, void*, 
-            size_t);
+            usize);
 void    kitsune_allocator_free(struct kitsune_allocator *const, void*);
 
 #endif

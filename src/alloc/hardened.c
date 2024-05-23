@@ -1,32 +1,33 @@
 #include <alloc/hardened.h>
+#include <numbers.h>
 #include <assert.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define MV(ptr, op) ((unsigned char*) ptr) op sizeof(size_t)
+#define MV(ptr, op) ((u8*) ptr) op sizeof(usize)
 #define CANARY_SIZE 100
 
 static char CLEAN_CANARY[CANARY_SIZE];
 
 static void *
-allocate(struct kitsune_allocator *a, size_t size)
+allocate(struct kitsune_allocator *a, usize size)
 {
         (void) a;
 
-        void *ptr = malloc(size + sizeof(size_t) + CANARY_SIZE);
+        void *ptr = malloc(size + sizeof(usize) + CANARY_SIZE);
         if (ptr == NULL)
                 return ptr;
 
-        memset(((unsigned char*) ptr) + sizeof(size_t) + size, 0, CANARY_SIZE);
+        memset(((u8*) ptr) + sizeof(usize) + size, 0, CANARY_SIZE);
 
-        *(size_t*) ptr = size;
+        *(usize*) ptr = size;
         return MV(ptr, +);
 }
 
 static void *
-reallocate(struct kitsune_allocator *a, void *ptr, size_t size)
+reallocate(struct kitsune_allocator *a, void *ptr, usize size)
 {
         (void) a;
 
@@ -34,13 +35,13 @@ reallocate(struct kitsune_allocator *a, void *ptr, size_t size)
                 return NULL;
         void *orig = MV(ptr, -);
 
-        orig = realloc(orig, size + sizeof(size_t));
+        orig = realloc(orig, size + sizeof(usize));
         if (orig == NULL)
                 return NULL;
 
-        memset(((unsigned char*) orig) + sizeof(size_t) + size, 0, CANARY_SIZE);
+        memset(((u8*) orig) + sizeof(usize) + size, 0, CANARY_SIZE);
 
-        *(size_t*) orig = size;
+        *(usize*) orig = size;
         
         return MV(orig, +);
 }
@@ -63,16 +64,16 @@ destroy(struct kitsune_allocator *a, void *ptr)
                 return;
         void *orig = MV(ptr, -);
 
-        size_t size = *(size_t*) orig;
-        check_pointer(((unsigned char*) orig) + sizeof(size_t) + size);
+        usize size = *(size_t*) orig;
+        check_pointer(((u8*) orig) + sizeof(usize) + size);
 
         free(orig);
 }
 
-size_t
+usize
 kitsune_hardened_allocated(void *ptr)
 {
-        return ptr == NULL ? 0 : *(size_t*) (MV(ptr, -));
+        return ptr == NULL ? 0 : *(usize*) (MV(ptr, -));
 }
 
 #undef MV

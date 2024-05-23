@@ -6,9 +6,9 @@
 <h3 align="center" style="font-size: 150%;">Mother of all LowByteFox C projects, useful C standard library</h3>
 
 ## Content
+- [x] Simpler Int Types
 - [x] Allocator API + Basic Allocator
 - [x] Hardened Memory Allocator
-- [ ] Simpler Int Types
 - [ ] Memory Utilities
 - [ ] Vec (Dynamic Array)
 - [ ] Stack
