@@ -48,7 +48,8 @@ void
                 return NULL;
 
         void *data = vec->allocator->alloc(vec->allocator, vec->chunksize);
-        kitsune_memcpy(data, vec->chunksize, kitsune_vec_rbegin(vec), vec->chunksize);
+        kitsune_memcpy(data, vec->chunksize, kitsune_vec_rbegin(vec),
+            vec->chunksize);
 
         vec->items = vec->allocator->resize(vec->allocator, vec->items,
             (--vec->size) * vec->chunksize);
@@ -87,7 +88,8 @@ kitsune_vec_remove(struct kitsune_vec *vec, usize index)
         u8 *ptr = vec->items;
 
         void *data = vec->allocator->alloc(vec->allocator, vec->chunksize);
-        kitsune_memcpy(data, vec->chunksize, ptr + index * vec->chunksize, vec->chunksize);
+        kitsune_memcpy(data, vec->chunksize, ptr + index * vec->chunksize,
+            vec->chunksize);
 
         kitsune_memcpy(ptr + vec->chunksize * index,
             (vec->size - index) * vec->chunksize,

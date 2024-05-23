@@ -19,7 +19,7 @@ void                kitsune_vec_deinit(struct kitsune_vec*,
 void                kitsune_vec_push(struct kitsune_vec*, void*);
 void                kitsune_vec_insert(struct kitsune_vec*, usize, void*);
 /*
- * BOTH POP and REMOVE ALLOCATOR memory for the removed element!
+ * BOTH POP and REMOVE ALLOCATE memory for the removed element!
  * Don't forget to free it!
  */
 void               *kitsune_vec_pop(struct kitsune_vec*);

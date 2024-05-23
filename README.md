@@ -11,6 +11,7 @@
 - [x] Hardened Memory Allocator
 - [x] Memory Utilities
 - [x] Vec (Dynamic Array)
+- [ ] Iterator API (Static + Dynamic)
 - [ ] Stack
 - [ ] Queue
 - [ ] String Utilities
