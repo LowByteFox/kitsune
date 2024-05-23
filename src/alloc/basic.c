@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#define MV(ptr, letter) ((unsigned char*) ptr) letter sizeof(size_t)
+#define MV(ptr, op) ((unsigned char*) ptr) op sizeof(size_t)
 
 static void *
 allocate(struct kitsune_allocator *a, size_t size)

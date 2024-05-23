@@ -7,7 +7,8 @@
 
 ## Content
 - [x] Allocator API + Basic Allocator
-- [ ] Hardened Memory Allocator
+- [x] Hardened Memory Allocator
+- [ ] Simpler Int Types
 - [ ] Memory Utilities
 - [ ] Vec (Dynamic Array)
 - [ ] Stack
