@@ -10,7 +10,7 @@
 - [x] Allocator API + Basic Allocator
 - [x] Hardened Memory Allocator
 - [x] Memory Utilities
-- [ ] Vec (Dynamic Array)
+- [x] Vec (Dynamic Array)
 - [ ] Stack
 - [ ] Queue
 - [ ] String Utilities
