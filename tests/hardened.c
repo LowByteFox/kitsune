@@ -11,7 +11,7 @@ main()
         arr[0] = 4;
         arr[1] = 3;
 
-        assert(kitsune_hardened_allocated(arr) == sizeof(int) * 2);
+        assert(kitsune_allocated(arr) == sizeof(int) * 2);
 
         /* Dirty the canary */
         arr[2] = 7;

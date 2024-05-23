@@ -49,12 +49,6 @@ destroy(struct kitsune_allocator *a, void *ptr)
         free(orig);
 }
 
-usize
-kitsune_basic_allocated(void *ptr)
-{
-        return ptr == NULL ? 0 : *(usize*) (MV(ptr, -));
-}
-
 #undef MV
 
 struct kitsune_allocator *const kitsune_basic_allocator =

@@ -1,5 +1,5 @@
-#ifndef _INTEGERS_H_
-#define _INTEGERS_H_
+#ifndef _NUMBERS_H_
+#define _NUMBERS_H_
 
 #include <inttypes.h>
 #include <stddef.h>

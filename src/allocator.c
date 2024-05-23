@@ -18,3 +18,9 @@ kitsune_allocator_free(struct kitsune_allocator *const a, void *ptr)
 {
         a->free(a, ptr);
 }
+
+usize
+kitsune_allocated(const void *ptr)
+{
+        return ptr == NULL ? 0 : *(usize*) (((u8*) ptr) - sizeof(usize));
+}
