@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -g -Wall -Wextra -Werror -std=c89
+CFLAGS = -O0 -g -Wall -Wextra -Werror -std=c89
 
 SRC_DIR = src
 INC_DIR = include
