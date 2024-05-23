@@ -6,18 +6,20 @@
 <h3 align="center" style="font-size: 150%;">Mother of all LowByteFox C projects, useful C standard library</h3>
 
 ## Content
+- [x] Allocator API + Basic Allocator
 - [ ] Safer Memory Allocator
 - [ ] Memory Utilities
 - [ ] Vec (Dynamic Array)
-- [ ] Result Type
 - [ ] Stack
 - [ ] Queue
 - [ ] String Utilities
 - [ ] UTF-8 Compatible Strings
 - [ ] Linked List
-- [ ] Tree Structures (Binary Tree, BST, Trie - 3 variants)
+- [ ] Faster Queue
 - [ ] Hash Functions (FNV-1a, DJB2, SDBM, Murmur3)
 - [ ] HashMap
+- [ ] Traced Allocator
+- [ ] Tree Structures (Binary Tree, BST, Trie - 3 variants)
 - [ ] Path Utilities
 - [ ] Command Utilities
 - [ ] Base64 Encoder/Decoder
