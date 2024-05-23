@@ -7,7 +7,7 @@
 
 ## Content
 - [x] Allocator API + Basic Allocator
-- [ ] Safer Memory Allocator
+- [ ] Hardened Memory Allocator
 - [ ] Memory Utilities
 - [ ] Vec (Dynamic Array)
 - [ ] Stack
