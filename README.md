@@ -9,7 +9,7 @@
 - [x] Simpler Int Types
 - [x] Allocator API + Basic Allocator
 - [x] Hardened Memory Allocator
-- [ ] Memory Utilities
+- [x] Memory Utilities
 - [ ] Vec (Dynamic Array)
 - [ ] Stack
 - [ ] Queue
