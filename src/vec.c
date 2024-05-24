@@ -5,7 +5,6 @@
 #include <vec.h>
 #include <memutils.h>
 
-static void    *kitsune_vec_at(struct kitsune_vec*, usize);
 static void    *kitsune_vec_begin(struct kitsune_vec*);
 static void    *kitsune_vec_end(struct kitsune_vec*);
 static void    *kitsune_vec_rbegin(struct kitsune_vec*);
