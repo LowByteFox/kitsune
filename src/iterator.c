@@ -1,3 +1,6 @@
+#include <vec.h>
+#include <assert.h>
+#include <dynamic_iterator.h>
 #include <numbers.h>
 #include <iterator.h>
 
@@ -26,7 +29,23 @@ void*
 kitsune_iterator_next(struct kitsune_iterator *iter)
 {
         if (iter->is_dynamic) {
-                /* XXX: Implement dynamic iterator */
+                /* the iterator is at offset 0, so I can allow this */
+                struct kitsune_dynamic_iterator *i = (void*) iter;
+
+                if (!i->cache_the_result)
+                        return i->next(i);
+
+                assert(i->pos > 0);
+                if (i->pos < i->result_cache.size) {
+                        void *current = kitsune_vec_at(&i->result_cache,
+                                            i->pos);
+                        i->pos++;
+                        return current;
+                }
+
+                void *result = i->next(i);
+                kitsune_vec_push(&i->result_cache, result);
+                return result;
         }
 
         if (iter->current == iter->end)
@@ -45,7 +64,16 @@ void*
 kitsune_iterator_previous(struct kitsune_iterator *iter)
 {
         if (iter->is_dynamic) {
-                /* XXX: Implement dynamic iterator */
+                /* the iterator is at offset 0, so I can allow this */
+                struct kitsune_dynamic_iterator *i = (void*) iter;
+
+                if (!i->cache_the_result)
+                        return NULL;
+                if (i->pos == 0)
+                        return NULL;
+
+                i->pos--;
+                return kitsune_vec_at(&i->result_cache, i->pos);
         }
 
         if (iter->current == iter->end)
