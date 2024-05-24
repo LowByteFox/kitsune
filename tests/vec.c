@@ -34,13 +34,6 @@ main()
 
         assert(kitsune_vec_size(&vec) == 5);
 
-        int *iter = kitsune_vec_begin(&vec);
-        int *end = kitsune_vec_end(&vec);
-
-        for (; iter != end; iter++) {
-            printf("%d\n", *iter);
-        }
-
         kitsune_vec_deinit(&vec, NULL);
 
         assert(kitsune_vec_empty(&vec) == true);

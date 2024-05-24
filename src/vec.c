@@ -5,6 +5,12 @@
 #include <vec.h>
 #include <memutils.h>
 
+static void    *kitsune_vec_at(struct kitsune_vec*, usize);
+static void    *kitsune_vec_begin(struct kitsune_vec*);
+static void    *kitsune_vec_end(struct kitsune_vec*);
+static void    *kitsune_vec_rbegin(struct kitsune_vec*);
+static void    *kitsune_vec_rend(struct kitsune_vec*);
+
 struct kitsune_vec
 kitsune_vec_init(usize chunksize, struct kitsune_allocator *allocator)
 {
@@ -124,26 +130,26 @@ kitsune_vec_at(struct kitsune_vec *vec, usize index)
         return ptr + index * vec->chunksize;
 }
 
-void*
+static void*
 kitsune_vec_begin(struct kitsune_vec *vec)
 {
         return vec->items;
 }
 
-void*
+static void*
 kitsune_vec_end(struct kitsune_vec *vec)
 {
         return ((u8*) vec->items) + vec->chunksize * vec->size;
 }
 
-void*
+static void*
 kitsune_vec_rbegin(struct kitsune_vec *vec)
 {
         return vec->size == 0 ? kitsune_vec_end(vec) : ((u8*) vec->items) +
             vec->chunksize * (vec->size - 1);
 }
 
-void*
+static void*
 kitsune_vec_rend(struct kitsune_vec *vec)
 {
         return ((u8*) vec->items) - vec->chunksize;

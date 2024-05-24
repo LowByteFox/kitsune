@@ -25,19 +25,11 @@ void                kitsune_vec_insert(struct kitsune_vec*, usize, void*);
  */
 void               *kitsune_vec_pop(struct kitsune_vec*);
 void               *kitsune_vec_remove(struct kitsune_vec*, usize);
+void               *kitsune_vec_at(struct kitsune_vec*, usize);
 usize               kitsune_vec_size(struct kitsune_vec*);
 bool                kitsune_vec_empty(struct kitsune_vec*);
 
-/* 
- * Iterator API
- */
-
-void                   *kitsune_vec_at(struct kitsune_vec*, usize);
-void                   *kitsune_vec_begin(struct kitsune_vec*);
-void                   *kitsune_vec_end(struct kitsune_vec*);
-void                   *kitsune_vec_rbegin(struct kitsune_vec*);
-void                   *kitsune_vec_rend(struct kitsune_vec*);
-
+/* Iterator API */
 struct kitsune_iterator kitsune_vec_iterator(struct kitsune_vec*);
 struct kitsune_iterator kitsune_vec_reverse_iterator(struct kitsune_vec*);
 
