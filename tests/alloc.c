@@ -12,6 +12,8 @@ main()
         arr[1] = 3;
 
         assert(kitsune_allocated(arr) == sizeof(int) * 2);
+        struct kitsune_pointer *ptr = kitsune_visualize(arr);
+        assert(ptr->size == sizeof(int) * 2);
 
         a->free(a, arr);
 

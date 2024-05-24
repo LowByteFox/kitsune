@@ -3,12 +3,13 @@
 
 #include <allocator.h>
 #include <numbers.h>
+#include <iterator.h>
 
 struct kitsune_vec {
-    void *items;
-    usize chunksize;
-    usize size;
     struct kitsune_allocator *allocator;
+    usize chunksize;
+    void *items;
+    usize size;
 };
 
 typedef void kitsune_vec_deletor(struct kitsune_allocator*, void *);
@@ -29,14 +30,15 @@ bool                kitsune_vec_empty(struct kitsune_vec*);
 
 /* 
  * Iterator API
- * Will change once proper Iterator API is introduced
  */
 
-void               *kitsune_vec_at(struct kitsune_vec*, usize);
-void               *kitsune_vec_begin(struct kitsune_vec*);
-void               *kitsune_vec_end(struct kitsune_vec*);
-void               *kitsune_vec_rbegin(struct kitsune_vec*);
-void               *kitsune_vec_rend(struct kitsune_vec*);
+void                   *kitsune_vec_at(struct kitsune_vec*, usize);
+void                   *kitsune_vec_begin(struct kitsune_vec*);
+void                   *kitsune_vec_end(struct kitsune_vec*);
+void                   *kitsune_vec_rbegin(struct kitsune_vec*);
+void                   *kitsune_vec_rend(struct kitsune_vec*);
 
+struct kitsune_iterator kitsune_vec_iterator(struct kitsune_vec*);
+struct kitsune_iterator kitsune_vec_reverse_iterator(struct kitsune_vec*);
 
 #endif

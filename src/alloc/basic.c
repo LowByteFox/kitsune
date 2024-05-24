@@ -28,7 +28,7 @@ reallocate(struct kitsune_allocator *a, void *ptr, usize size)
         void *orig = NULL;
 
         if (ptr != NULL)
-                orig = ptr;
+                orig = MV(ptr, -);
 
         orig = realloc(orig, size + sizeof(usize));
         if (orig == NULL)

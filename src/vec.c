@@ -1,3 +1,4 @@
+#include <iterator.h>
 #include <assert.h>
 #include <numbers.h>
 #include <stdio.h>
@@ -146,4 +147,21 @@ void*
 kitsune_vec_rend(struct kitsune_vec *vec)
 {
         return ((u8*) vec->items) - vec->chunksize;
+}
+
+struct kitsune_iterator
+kitsune_vec_iterator(struct kitsune_vec *vec)
+{
+        struct kitsune_iterator iter = kitsune_iterator_init(
+            kitsune_vec_begin(vec), kitsune_vec_end(vec), vec->chunksize);
+        return iter;
+}
+
+struct kitsune_iterator
+kitsune_vec_reverse_iterator(struct kitsune_vec *vec)
+{
+        struct kitsune_iterator iter = kitsune_iterator_init(
+            kitsune_vec_rbegin(vec), kitsune_vec_rend(vec), vec->chunksize);
+        kitsune_iterator_change_direction(&iter, SUBSTRACTION);
+        return iter;
 }

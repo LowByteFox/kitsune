@@ -24,3 +24,9 @@ kitsune_allocated(const void *ptr)
 {
         return ptr == NULL ? 0 : *(usize*) (((u8*) ptr) - sizeof(usize));
 }
+
+struct kitsune_pointer*
+kitsune_visualize(void *ptr)
+{
+    return (struct kitsune_pointer*) (void*) (((u8*) ptr) - sizeof(usize));
+}

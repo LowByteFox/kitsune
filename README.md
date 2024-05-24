@@ -13,15 +13,16 @@
 - [x] Vec (Dynamic Array)
 - [ ] Iterator API (Static + Dynamic)
 - [ ] Stack
-- [ ] Queue
-- [ ] String Utilities
-- [ ] UTF-8 Compatible Strings
 - [ ] Linked List
-- [ ] Faster Queue
+- [ ] Queue
 - [ ] Hash Functions (FNV-1a, DJB2, SDBM, Murmur3)
 - [ ] HashMap
 - [ ] Traced Allocator
+- [ ] Arena Allocator
+- [ ] Buffered Allocator
 - [ ] Tree Structures (Binary Tree, BST, Trie - 3 variants)
+- [ ] String Utilities
+- [ ] UTF-8 Compatible Strings
 - [ ] Path Utilities
 - [ ] Command Utilities
 - [ ] Base64 Encoder/Decoder
