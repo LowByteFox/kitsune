@@ -35,7 +35,7 @@ kitsune_iterator_next(struct kitsune_iterator *iter)
                 if (!i->cache_the_result)
                         return i->next(i);
 
-                assert(i->pos > 0);
+                assert(i->pos >= 0);
                 if (i->pos < i->result_cache.size) {
                         void *current = kitsune_vec_at(&i->result_cache,
                                             i->pos);
@@ -45,6 +45,7 @@ kitsune_iterator_next(struct kitsune_iterator *iter)
 
                 void *result = i->next(i);
                 kitsune_vec_push(&i->result_cache, result);
+                i->pos++;
                 return result;
         }
 

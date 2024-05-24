@@ -32,7 +32,7 @@ main()
 {
         struct kitsune_allocator *const a = kitsune_hardened_allocator;
         struct kitsune_dynamic_iterator iter = kitsune_dynamic_iterator_init(
-            sizeof(int), false, a, generate, deletor);
+            sizeof(int), true, a, generate, deletor);
 
         struct generator_data *d = a->alloc(a, sizeof(struct generator_data));
         d->a = a;
@@ -43,8 +43,19 @@ main()
         while (true) {
                 int *val = kitsune_iterator_next(&iter.base);
                 printf("%d\n", *val);
+
+                if (*val == 25)
+                        break;
+        }
+        printf("Now we go back!\n");
+
+        int *prev = kitsune_iterator_previous(&iter.base);
+        while (prev != NULL) {
+            printf("%d\n", *prev);
+            prev = kitsune_iterator_previous(&iter.base);
         }
 
         kitsune_dynamic_iterator_deinit(&iter);
+        assert(iter.result_cache.size == 0);
         return 0;
 }
