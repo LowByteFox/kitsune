@@ -13,7 +13,7 @@
 - [x] Vec (Dynamic Array)
 - [x] Iterator API (Static + Dynamic)
 - [x] Stack
-- [ ] Reference Counter
+- [x] Reference Counter
 - [ ] Linked List
 - [ ] Queue
 - [ ] Hash Functions (FNV-1a, DJB2, SDBM, Murmur3)
