@@ -1,15 +1,15 @@
-#ifndef _VEC_MANAGED_H_
-#define _VEC_MANAGED_H_
+#ifndef _VEC_H_
+#define _VEC_H_
 
 #include <allocator.h>
-#include <numbers.h>
 #include <iterator.h>
+#include <numbers.h>
 
 struct kitsune_vec {
-    struct kitsune_allocator *allocator;
-    usize chunksize;
-    void *items;
-    usize size;
+        struct kitsune_allocator *allocator;
+        usize chunksize;
+        void *items;
+        usize size;
 };
 
 typedef void kitsune_vec_deletor(struct kitsune_allocator*, void *);
@@ -27,6 +27,9 @@ void               *kitsune_vec_pop(struct kitsune_vec*);
 void               *kitsune_vec_remove(struct kitsune_vec*, usize);
 void               *kitsune_vec_at(struct kitsune_vec*, usize);
 usize               kitsune_vec_size(struct kitsune_vec*);
+usize               kitsune_vec_capacity(struct kitsune_vec*);
+void                kitsune_vec_reserve(struct kitsune_vec*, usize);
+void                kitsune_vec_shrink_to_fit(struct kitsune_vec*);
 bool                kitsune_vec_empty(struct kitsune_vec*);
 
 /* Iterator API */

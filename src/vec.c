@@ -1,9 +1,12 @@
+#include <allocator.h>
 #include <iterator.h>
 #include <assert.h>
 #include <numbers.h>
 #include <stdio.h>
 #include <vec.h>
 #include <memutils.h>
+
+#define VEC_CHUNK 16
 
 static void    *kitsune_vec_begin(struct kitsune_vec*);
 static void    *kitsune_vec_end(struct kitsune_vec*);
@@ -39,8 +42,10 @@ kitsune_vec_deinit(struct kitsune_vec *vec, kitsune_vec_deletor *deletor)
 void
 kitsune_vec_push(struct kitsune_vec *vec, void *data)
 {
-        vec->items = vec->allocator->resize(vec->allocator, vec->items,
-            (++vec->size) * vec->chunksize);
+        usize capacity = kitsune_vec_capacity(vec);
+        if (vec->size == capacity)
+                kitsune_vec_reserve(vec, capacity + VEC_CHUNK);
+        vec->size++;
 
         u8 *ptr = vec->items;
         kitsune_memcpy(ptr + (vec->size - 1) * vec->chunksize, vec->chunksize, 
@@ -57,9 +62,11 @@ void
         kitsune_memcpy(data, vec->chunksize, kitsune_vec_rbegin(vec),
             vec->chunksize);
 
-        vec->items = vec->allocator->resize(vec->allocator, vec->items,
-            (--vec->size) * vec->chunksize);
+        vec->size--;
 
+        usize capacity = kitsune_vec_capacity(vec);
+        if (vec->size + VEC_CHUNK == capacity)
+                kitsune_vec_shrink_to_fit(vec);
         return data;
 }
 
@@ -71,8 +78,10 @@ kitsune_vec_insert(struct kitsune_vec *vec, usize index, void *data)
                 return;
         }
 
-        vec->items = vec->allocator->resize(vec->allocator, vec->items,
-            (++vec->size) * vec->chunksize);
+        usize capacity = kitsune_vec_capacity(vec);
+        if (vec->size == capacity)
+                kitsune_vec_reserve(vec, capacity + VEC_CHUNK);
+        vec->size++;
 
         u8 *ptr = vec->items;
 
@@ -102,10 +111,42 @@ kitsune_vec_remove(struct kitsune_vec *vec, usize index)
             ptr + vec->chunksize * (index + 1),
             (vec->size - 1 - index) * vec->chunksize);
 
-        vec->items = vec->allocator->resize(vec->allocator, vec->items,
-            (--vec->size) * vec->chunksize);
+        vec->size--;
+
+        usize capacity = kitsune_vec_capacity(vec);
+        if (vec->size + VEC_CHUNK == capacity)
+                kitsune_vec_shrink_to_fit(vec);
 
         return data;
+}
+
+usize
+kitsune_vec_capacity(struct kitsune_vec *vec)
+{
+        usize allocated = kitsune_allocated(vec->items);
+        return allocated / vec->chunksize;
+}
+
+void
+kitsune_vec_reserve(struct kitsune_vec *vec, usize new_capacity)
+{
+        usize capacity = kitsune_vec_capacity(vec);
+        if (new_capacity <= capacity)
+                return;
+
+        vec->items = vec->allocator->resize(vec->allocator, vec->items,
+                new_capacity * vec->chunksize);
+}
+
+void
+kitsune_vec_shrink_to_fit(struct kitsune_vec *vec)
+{
+        usize allocated = kitsune_allocated(vec->items);
+        if (allocated == vec->size * vec->chunksize)
+                return;
+
+        vec->items = vec->allocator->resize(vec->allocator, vec->items,
+                vec->size * vec->chunksize);
 }
 
 usize
@@ -170,3 +211,5 @@ kitsune_vec_reverse_iterator(struct kitsune_vec *vec)
         kitsune_iterator_change_direction(&iter, SUBSTRACTION);
         return iter;
 }
+
+#undef VEC_CHUNK
