@@ -1,7 +1,6 @@
 #include <allocator.h>
 #include <alloc/hardened.h>
 #include <strings.h>
-#include <stdio.h>
 #include <vec.h>
 #include <assert.h>
 

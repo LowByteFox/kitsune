@@ -12,11 +12,11 @@ struct kitsune_vec {
         usize size;
 };
 
-typedef void kitsune_vec_deletor(struct kitsune_allocator*, void *);
+typedef void kitsune_vec_deletor(struct kitsune_allocator*, void*);
 
 struct kitsune_vec  kitsune_vec_init(usize, struct kitsune_allocator*);
 void                kitsune_vec_deinit(struct kitsune_vec*,
-                        kitsune_vec_deletor);
+                        kitsune_vec_deletor*);
 void                kitsune_vec_push(struct kitsune_vec*, void*);
 void                kitsune_vec_insert(struct kitsune_vec*, usize, void*);
 /*

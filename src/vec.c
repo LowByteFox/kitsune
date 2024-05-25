@@ -30,7 +30,7 @@ kitsune_vec_deinit(struct kitsune_vec *vec, kitsune_vec_deletor *deletor)
         void *end = kitsune_vec_end(vec);
 
         while (iter != end) {
-                deletor ? deletor(vec->allocator, *(void**) iter) : NULL;
+                deletor ? deletor(vec->allocator, iter) : NULL;
                 iter = ((u8*) iter) + vec->chunksize;
         }
 

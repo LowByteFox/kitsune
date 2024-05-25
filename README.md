@@ -12,7 +12,8 @@
 - [x] Memory Utilities
 - [x] Vec (Dynamic Array)
 - [x] Iterator API (Static + Dynamic)
-- [ ] Stack
+- [x] Stack
+- [ ] Reference Counter
 - [ ] Linked List
 - [ ] Queue
 - [ ] Hash Functions (FNV-1a, DJB2, SDBM, Murmur3)
