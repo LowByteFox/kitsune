@@ -1,3 +1,4 @@
+#include <dynamic_iterator.h>
 #include <allocator.h>
 #include <iterator.h>
 #include <assert.h>
@@ -12,6 +13,18 @@ static void    *kitsune_vec_begin(struct kitsune_vec*);
 static void    *kitsune_vec_end(struct kitsune_vec*);
 static void    *kitsune_vec_rbegin(struct kitsune_vec*);
 static void    *kitsune_vec_rend(struct kitsune_vec*);
+static void    *kitsune_vec_dynamic_iterator_next(
+                    struct kitsune_dynamic_iterator*);
+static void    *kitsune_vec_dynamic_iterator_previous(
+                    struct kitsune_dynamic_iterator*);
+static void     kitsune_vec_dynamic_iterator_deletor(
+                    struct kitsune_dynamic_iterator*);
+
+struct vec_iter_ctx {
+    struct kitsune_allocator *allocator;
+    struct kitsune_vec *vec;
+    usize pos;
+};
 
 struct kitsune_vec
 kitsune_vec_init(usize chunksize, struct kitsune_allocator *allocator)
@@ -210,6 +223,91 @@ kitsune_vec_reverse_iterator(struct kitsune_vec *vec)
             kitsune_vec_rbegin(vec), kitsune_vec_rend(vec), vec->chunksize);
         kitsune_iterator_change_direction(&iter, SUBSTRACTION);
         return iter;
+}
+
+struct kitsune_dynamic_iterator
+kitsune_vec_dynamic_iterator(struct kitsune_vec *vec)
+{
+        struct vec_iter_ctx *ctx = vec->allocator->alloc(vec->allocator,
+            sizeof(struct vec_iter_ctx));
+        ctx->allocator = vec->allocator;
+        ctx->vec = vec;
+        ctx->pos = 0;
+
+        struct kitsune_dynamic_iterator iter = kitsune_dynamic_iterator_init(
+            kitsune_vec_dynamic_iterator_next,
+            kitsune_vec_dynamic_iterator_previous,
+            kitsune_vec_dynamic_iterator_deletor);
+        kitsune_dynamic_iterator_set_context(&iter, ctx);
+
+        return iter;
+}
+
+struct kitsune_dynamic_iterator
+kitsune_vec_reverse_dynamic_iterator(struct kitsune_vec *vec)
+{
+        struct vec_iter_ctx *ctx = vec->allocator->alloc(vec->allocator,
+            sizeof(struct vec_iter_ctx));
+        ctx->allocator = vec->allocator;
+        ctx->vec = vec;
+        ctx->pos = 0;
+
+        struct kitsune_dynamic_iterator iter = kitsune_dynamic_iterator_init(
+            kitsune_vec_dynamic_iterator_next,
+            kitsune_vec_dynamic_iterator_previous,
+            kitsune_vec_dynamic_iterator_deletor);
+
+        iter.base.direction = SUBSTRACTION;
+        kitsune_dynamic_iterator_set_context(&iter, ctx);
+
+        return iter;
+}
+
+static void*
+kitsune_vec_dynamic_iterator_next(struct kitsune_dynamic_iterator *iter)
+{ 
+        struct vec_iter_ctx *ctx = iter->context;
+        void *item = kitsune_vec_at(ctx->vec, ctx->pos);
+        if (iter->base.direction == ADDITION)
+                ctx->pos++;
+        else {
+                if (ctx->pos == 0)
+                        return NULL;
+                else
+                        ctx->pos--;
+        }
+
+        if (item == NULL)
+                ctx->pos--;
+
+        return item;
+}
+
+static void*
+kitsune_vec_dynamic_iterator_previous(struct kitsune_dynamic_iterator *iter)
+{
+        struct vec_iter_ctx *ctx = iter->context;
+        void *item = kitsune_vec_at(ctx->vec, ctx->pos);
+
+        if (iter->base.direction == ADDITION) {
+                if (ctx->pos == 0)
+                        return NULL;
+                else
+                        ctx->pos--;
+        } else
+                ctx->pos++;
+
+        if (item == NULL)
+                ctx->pos--;
+
+        return item;
+}
+
+static void
+kitsune_vec_dynamic_iterator_deletor(struct kitsune_dynamic_iterator *iter)
+{
+        struct vec_iter_ctx *ctx = iter->context;
+        ctx->allocator->free(ctx->allocator, iter->context);
 }
 
 #undef VEC_CHUNK

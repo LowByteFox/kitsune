@@ -3,6 +3,7 @@
 
 #include <allocator.h>
 #include <iterator.h>
+#include <dynamic_iterator.h>
 #include <numbers.h>
 
 struct kitsune_vec {
@@ -33,7 +34,13 @@ void                kitsune_vec_shrink_to_fit(struct kitsune_vec*);
 bool                kitsune_vec_empty(struct kitsune_vec*);
 
 /* Iterator API */
-struct kitsune_iterator kitsune_vec_iterator(struct kitsune_vec*);
-struct kitsune_iterator kitsune_vec_reverse_iterator(struct kitsune_vec*);
+struct kitsune_iterator         kitsune_vec_iterator(
+                                    struct kitsune_vec*);
+struct kitsune_iterator         kitsune_vec_reverse_iterator(
+                                    struct kitsune_vec*);
+struct kitsune_dynamic_iterator kitsune_vec_dynamic_iterator(
+                                    struct kitsune_vec*);
+struct kitsune_dynamic_iterator kitsune_vec_reverse_dynamic_iterator(
+                                    struct kitsune_vec*);
 
 #endif

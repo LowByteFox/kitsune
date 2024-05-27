@@ -12,6 +12,7 @@
 - [x] Memory Utilities
 - [x] Vec (Dynamic Array)
 - [x] Iterator API (Static + Dynamic)
+- [x] Generator API
 - [x] Stack
 - [x] Reference Counter
 - [ ] Linked List

@@ -1,6 +1,7 @@
+#include <dynamic_iterator.h>
 #include <vec.h>
 #include <assert.h>
-#include <dynamic_iterator.h>
+#include <generator.h>
 #include <numbers.h>
 #include <iterator.h>
 
@@ -13,7 +14,7 @@ kitsune_iterator_init(void *begin, void *end, usize chunksize)
         iter.end = end;
         iter.chunk = chunksize;
         iter.direction = ADDITION;
-        iter.is_dynamic = false;
+        iter.kind = STATIC;
 
         return iter;
 }
@@ -28,9 +29,10 @@ kitsune_iterator_change_direction(struct kitsune_iterator *iter,
 void*
 kitsune_iterator_next(struct kitsune_iterator *iter)
 {
-        if (iter->is_dynamic) {
+        switch (iter->kind) {
+        case GENERATOR: {
                 /* the iterator is at offset 0, so I can allow this */
-                struct kitsune_dynamic_iterator *i = (void*) iter;
+                struct kitsune_generator *i = (void*) iter;
 
                 if (!i->cache_the_result)
                         return i->next(i);
@@ -48,6 +50,13 @@ kitsune_iterator_next(struct kitsune_iterator *iter)
                 i->pos++;
                 return result;
         }
+        case DYNAMIC: {
+                struct kitsune_dynamic_iterator *i = (void*) iter;
+                return i->next(i);
+        }
+        default:
+                break;
+        }
 
         if (iter->current == iter->end)
                 return NULL;
@@ -64,10 +73,10 @@ kitsune_iterator_next(struct kitsune_iterator *iter)
 void*
 kitsune_iterator_previous(struct kitsune_iterator *iter)
 {
-        if (iter->is_dynamic) {
+        switch (iter->kind) {
+        case GENERATOR: {
                 /* the iterator is at offset 0, so I can allow this */
-                struct kitsune_dynamic_iterator *i = (void*) iter;
-
+                struct kitsune_generator *i = (void*) iter;
                 if (!i->cache_the_result)
                         return NULL;
                 if (i->pos == 0)
@@ -75,6 +84,13 @@ kitsune_iterator_previous(struct kitsune_iterator *iter)
 
                 i->pos--;
                 return kitsune_vec_at(&i->result_cache, i->pos);
+        }
+        case DYNAMIC: {
+                struct kitsune_dynamic_iterator *i = (void*) iter;
+                return i->previous(i);
+        }
+        default:
+                break;
         }
 
         if (iter->current == iter->end)

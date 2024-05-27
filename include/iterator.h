@@ -9,6 +9,12 @@ enum kitsune_iterator_direction {
         SUBSTRACTION
 };
 
+enum kitsune_iterator_type {
+        STATIC,
+        GENERATOR,
+        DYNAMIC,
+};
+
 /* 
  * Simple static iterator
  * Results don't need to be cached as everything is known and already in the 
@@ -22,10 +28,10 @@ struct kitsune_iterator {
         usize chunk;
         void *end;
         enum kitsune_iterator_direction direction;
-        bool is_dynamic;
+        enum kitsune_iterator_type kind;
 };
 
-/* Iterator API, dynamic iterator compatible */
+/* Iterator API, generator and dynamic iterator compatible */
 struct kitsune_iterator kitsune_iterator_init(void*, void*, usize);
 void                    kitsune_iterator_change_direction(
                             struct kitsune_iterator*,
