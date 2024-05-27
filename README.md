@@ -16,7 +16,7 @@
 - [x] Stack
 - [x] Reference Counter
 - [x] Linked List
-- [ ] Hash Functions (FNV-1a, DJB2, SDBM, Murmur3)
+- [x] Hash Functions (FNV-1a, DJB2, SDBM)
 - [ ] HashMap
 - [ ] Traced Allocator
 - [ ] Queue
