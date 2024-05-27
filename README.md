@@ -15,11 +15,11 @@
 - [x] Generator API
 - [x] Stack
 - [x] Reference Counter
-- [ ] Linked List
-- [ ] Queue
+- [x] Linked List
 - [ ] Hash Functions (FNV-1a, DJB2, SDBM, Murmur3)
 - [ ] HashMap
 - [ ] Traced Allocator
+- [ ] Queue
 - [ ] Arena Allocator
 - [ ] Buffered Allocator
 - [ ] Tree Structures (Binary Tree, BST, Trie - 3 variants)

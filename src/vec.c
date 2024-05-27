@@ -43,7 +43,7 @@ kitsune_vec_deinit(struct kitsune_vec *vec, kitsune_vec_deletor *deletor)
         void *end = kitsune_vec_end(vec);
 
         while (iter != end) {
-                deletor ? deletor(vec->allocator, iter) : NULL;
+                deletor != NULL ? deletor(vec->allocator, iter) : NULL;
                 iter = ((u8*) iter) + vec->chunksize;
         }
 
@@ -131,6 +131,22 @@ kitsune_vec_remove(struct kitsune_vec *vec, usize index)
                 kitsune_vec_shrink_to_fit(vec);
 
         return data;
+}
+
+bool
+kitsune_vec_contains(struct kitsune_vec *vec, void *data)
+{
+        void *iter = kitsune_vec_begin(vec);
+        void *end = kitsune_vec_end(vec);
+
+        while (iter != end) {
+                if (kitsune_memcmp(iter, vec->chunksize, data, vec->chunksize)
+                    == 0)
+                        return true;
+                iter = ((u8*) iter) + vec->chunksize;
+        }
+
+        return false;
 }
 
 usize

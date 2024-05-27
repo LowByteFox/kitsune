@@ -27,6 +27,7 @@ void                kitsune_vec_insert(struct kitsune_vec*, usize, void*);
 void               *kitsune_vec_pop(struct kitsune_vec*);
 void               *kitsune_vec_remove(struct kitsune_vec*, usize);
 void               *kitsune_vec_at(struct kitsune_vec*, usize);
+bool                kitsune_vec_contains(struct kitsune_vec*, void*);
 usize               kitsune_vec_size(struct kitsune_vec*);
 usize               kitsune_vec_capacity(struct kitsune_vec*);
 void                kitsune_vec_reserve(struct kitsune_vec*, usize);
