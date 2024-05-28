@@ -18,7 +18,7 @@
 - [x] Linked List
 - [x] Hash Functions (FNV-1a, DJB2, SDBM)
 - [x] Crashtrace
-- [x] HashMap - iterator is missing
+- [x] HashMap - Iterator.previous is not implemented
 - [ ] Traced Allocator
 - [ ] Queue
 - [ ] Arena Allocator

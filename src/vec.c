@@ -21,9 +21,9 @@ static void     kitsune_vec_dynamic_iterator_deletor(
                     struct kitsune_dynamic_iterator*);
 
 struct vec_iter_ctx {
-    struct kitsune_allocator *allocator;
-    struct kitsune_vec *vec;
-    usize pos;
+        struct kitsune_allocator *allocator;
+        struct kitsune_vec *vec;
+        usize pos;
 };
 
 struct kitsune_vec

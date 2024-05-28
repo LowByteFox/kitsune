@@ -16,11 +16,11 @@ static void                         kitsune_list_iterator_deletor(
                                         struct kitsune_dynamic_iterator*);
 
 struct list_iter_ctx {
-    struct kitsune_allocator *allocator;
-    struct kitsune_list_node *current;
-    struct kitsune_list_node *previous;
-    struct kitsune_list *list;
-    bool circular;
+        struct kitsune_allocator *allocator;
+        struct kitsune_list_node *current;
+        struct kitsune_list_node *previous;
+        struct kitsune_list *list;
+        bool circular;
 };
 
 struct kitsune_list

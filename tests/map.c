@@ -1,7 +1,8 @@
+#include <dynamic_iterator.h>
+#include <iterator.h>
 #include <crashtrace.h>
-#include <numbers.h>
 #include <allocator.h>
-#include <alloc/basic.h>
+#include <alloc/hardened.h>
 #include <stdio.h>
 #include <strings.h>
 #include <map.h>
@@ -12,18 +13,20 @@ int
 main()
 {
         kitsune_install_crashtrace();
-        struct kitsune_allocator *const a = kitsune_basic_allocator;
-        struct kitsune_map map = kitsune_map_init(sizeof(usize), a,
+        struct kitsune_allocator *const a = kitsune_hardened_allocator;
+        struct kitsune_map map = kitsune_map_init(sizeof(int), a,
             kitsune_fnv1a_64);
-        usize i = 0;
 
-        for (; i < 10000; i++) {
-            kitsune_map_insert(&map, &i, sizeof(usize), &i);
-        }
+        int val = 7;
+        kitsune_map_insert(&map, "Hello!", 7, &val);
+        val = 50;
+        kitsune_map_insert(&map, "Hewwo!", 7, &val);
 
-        for (i = 0; i < 10000; i++) {
-            usize *value = kitsune_map_get(&map, &i, sizeof(usize));
-            printf("%ld\n", *value);
+        struct kitsune_dynamic_iterator iter = kitsune_map_iterator(&map);
+        struct kitsune_map_entry *item = kitsune_iterator_next(&iter.base);
+        while (item != NULL) {
+                printf("%d\n", *(int*) item->value);
+                item = kitsune_iterator_next(&iter.base);
         }
 
         kitsune_map_deinit(&map, NULL);
