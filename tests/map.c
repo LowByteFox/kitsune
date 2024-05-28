@@ -20,12 +20,17 @@ main()
         int val = 7;
         kitsune_map_insert(&map, "Hello!", 7, &val);
         val = 50;
-        kitsune_map_insert(&map, "Hewwo!", 7, &val);
+        kitsune_map_insert(&map, "Hey!", 5, &val);
+        val = 10;
+        kitsune_map_insert(&map, "uwu!", 5, &val);
+        val = 4;
+        kitsune_map_insert(&map, "owo", 4, &val);
 
         struct kitsune_dynamic_iterator iter = kitsune_map_iterator(&map);
         struct kitsune_map_entry *item = kitsune_iterator_next(&iter.base);
+
         while (item != NULL) {
-                printf("%d\n", *(int*) item->value);
+                printf("%s\t=> %d\n", (char*) item->key, *(int*) item->value);
                 item = kitsune_iterator_next(&iter.base);
         }
 
