@@ -42,7 +42,7 @@ kitsune_list_deinit(struct kitsune_list *list, kitsune_list_deletor *deletor)
         while (current != NULL) {
                 next = current->next;
                 deletor != NULL ? deletor(list->allocator, current->data)
-                    : NULL;
+                    : list->allocator->free(list->allocator, current->data);
 
                 list->allocator->free(list->allocator, current);
                 current = next;
@@ -282,8 +282,7 @@ kitsune_list_new_node(struct kitsune_list *list, void *data)
 {
         struct kitsune_list_node *node = list->allocator->alloc(
             list->allocator, sizeof(struct kitsune_list_node));
-        node->data = list->allocator->alloc(list->allocator, list->datasize);
-        kitsune_memcpy2(node->data, data, list->datasize);
+        node->data = kitsune_memdup(data, list->datasize, list->allocator);
         node->next = NULL;
         node->previous = NULL;
         list->size++;

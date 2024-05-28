@@ -1,5 +1,10 @@
-CC = cc
-CFLAGS = -O0 -g -Wall -Wextra -Werror -std=c89
+CC = clang
+CFLAGS = -Wno-unused-command-line-argument -O0 -g -Wall -Wextra -Werror -std=c89 -march=native
+
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S), FreeBSD)
+	CFLAGS += -lexecinfo
+endif
 
 SRC_DIR = src
 INC_DIR = include
@@ -30,7 +35,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 
 $(TEST_BIN_DIR)/%: tests/%.c
 	@mkdir -p $(TEST_BIN_DIR)
-	$(CC) $(CFLAGS) -I$(INC_DIR) -Llib -lkitsune $< -o $@
+	$(CC) $(CFLAGS) -Wl,-export-dynamic -I$(INC_DIR) -Llib -lkitsune $< -o $@
 
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)

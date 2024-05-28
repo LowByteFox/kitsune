@@ -1,3 +1,4 @@
+#include <allocator.h>
 #include <alloc/hardened.h>
 #include <numbers.h>
 #include <assert.h>
@@ -16,11 +17,11 @@ allocate(struct kitsune_allocator *a, usize size)
 {
         (void) a;
 
-        void *ptr = malloc(size + sizeof(usize) + CANARY_SIZE);
+        struct kitsune_pointer *ptr = malloc(size + sizeof(usize) + CANARY_SIZE);
         if (ptr == NULL)
                 return ptr;
 
-        memset(((u8*) ptr) + sizeof(usize) + size, 0, CANARY_SIZE);
+        memset(ptr->ptr + ptr->size, 0, CANARY_SIZE);
 
         *(usize*) ptr = size;
         return MV(ptr, +);
@@ -36,7 +37,7 @@ reallocate(struct kitsune_allocator *a, void *ptr, usize size)
         if (ptr != NULL)
                 orig = MV(ptr, -);
 
-        orig = realloc(orig, size + sizeof(usize));
+        orig = realloc(orig, size + sizeof(usize) + CANARY_SIZE);
         if (orig == NULL)
                 return NULL;
 
@@ -63,12 +64,11 @@ destroy(struct kitsune_allocator *a, void *ptr)
 
         if (ptr == NULL)
                 return;
-        void *orig = MV(ptr, -);
+        struct kitsune_pointer *p = kitsune_visualize(ptr);
 
-        usize size = *(size_t*) orig;
-        check_pointer(((u8*) orig) + sizeof(usize) + size);
+        check_pointer(p->ptr + p->size);
 
-        free(orig);
+        free(p);
 }
 
 #undef MV

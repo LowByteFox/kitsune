@@ -17,6 +17,7 @@
 - [x] Reference Counter
 - [x] Linked List
 - [x] Hash Functions (FNV-1a, DJB2, SDBM)
+- [ ] Crashtrace
 - [ ] HashMap
 - [ ] Traced Allocator
 - [ ] Queue

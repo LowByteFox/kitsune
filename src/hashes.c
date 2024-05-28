@@ -36,10 +36,10 @@ kitsune_djb2_32(const void *data, usize size)
 {
         const u8 *buffer = data;
         u32 hash = 5381;
-        i32 c;
+        usize i = 0;
 
-        while ((c = *buffer++)) {
-                hash = ((hash << 5) + hash) + c;
+        for (; i < size; i++) {
+                hash = ((hash << 5) + hash) + buffer[i];
         }
 
         return hash;
@@ -50,10 +50,10 @@ kitsune_djb2_64(const void *data, usize size)
 {
         const u8 *buffer = data;
         u64 hash = 5381;
-        i32 c;
+        usize i = 0;
 
-        while ((c = *buffer++)) {
-                hash = ((hash << 5) + hash) + c;
+        for (; i < size; i++) {
+                hash = ((hash << 5) + hash) + buffer[i];
         }
 
         return hash;
@@ -64,10 +64,10 @@ kitsune_sdbm_32(const void *data, usize size)
 {
         const u8 *buffer = data;
         u32 hash = 0;
-        i32 c;
+        usize i = 0;
 
-        while ((c = *buffer++)) {
-                hash = c + (hash << 6) + (hash << 16) - hash;
+        for (; i < size; i++) {
+                hash = buffer[i] + (hash << 6) + (hash << 16) - hash;
         }
 
         return hash;
@@ -78,10 +78,10 @@ kitsune_sdbm_64(const void *data, usize size)
 {
         const u8 *buffer = data;
         u64 hash = 0;
-        i32 c;
+        usize i = 0;
 
-        while ((c = *buffer++)) {
-                hash = c + (hash << 6) + (hash << 16) - hash;
+        for (; i < size; i++) {
+                hash = buffer[i] + (hash << 6) + (hash << 16) - hash;
         }
 
         return hash;

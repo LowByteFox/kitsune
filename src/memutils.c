@@ -3,7 +3,7 @@
 #include <allocator.h>
 #include <memutils.h>
 
-void *
+void*
 kitsune_memchr(const void *ptr, usize destsize, i32 c, usize n)
 {
         if (ptr == NULL)
@@ -23,7 +23,7 @@ kitsune_memchr(const void *ptr, usize destsize, i32 c, usize n)
         return NULL;
 }
 
-void *
+void*
 kitsune_memcpy(void *dest, usize destsize, const void *src, usize n)
 {
         if (dest == NULL || src == NULL)
@@ -41,7 +41,7 @@ kitsune_memcpy(void *dest, usize destsize, const void *src, usize n)
         return dest;
 }
 
-void *
+void*
 kitsune_memmove(void *dest, usize destsize, const void *src, usize n)
 {
         if (dest == NULL || src == NULL)
@@ -67,7 +67,7 @@ kitsune_memmove(void *dest, usize destsize, const void *src, usize n)
         return dest;
 }
 
-void *
+void*
 kitsune_memset(void *dest, usize destsize, i32 c, usize n)
 {
         if (dest == NULL)
@@ -109,7 +109,7 @@ kitsune_memcmp(const void *dest, usize destsize, const void *src, usize n)
 
 }
 
-void *
+void*
 kitsune_rmemcpy(void *dest, usize destsize, const void *src, usize n)
 {
         if (dest == NULL || src == NULL)
@@ -130,7 +130,7 @@ kitsune_rmemcpy(void *dest, usize destsize, const void *src, usize n)
         return dest;
 }
 
-void *
+void*
 kitsune_memchr2(const void *ptr, i32 c, usize n)
 {
         if (ptr == NULL)
@@ -150,7 +150,7 @@ kitsune_memchr2(const void *ptr, i32 c, usize n)
         return NULL;
 }
 
-void *
+void*
 kitsune_memcpy2(void *dest, const void *src, usize n)
 {
         if (dest == NULL || src == NULL)
@@ -168,7 +168,7 @@ kitsune_memcpy2(void *dest, const void *src, usize n)
         return dest;
 }
 
-void *
+void*
 kitsune_memmove2(void *dest, const void *src, usize n)
 {
         if (dest == NULL || src == NULL)
@@ -194,7 +194,7 @@ kitsune_memmove2(void *dest, const void *src, usize n)
         return dest;
 }
 
-void *
+void*
 kitsune_memset2(void *dest, i32 c, usize n)
 {
         if (dest == NULL)
@@ -236,7 +236,7 @@ kitsune_memcmp2(const void *dest, const void *src, usize n)
 
 }
 
-void *
+void*
 kitsune_rmemcpy2(void *dest, const void *src, usize n)
 {
         if (dest == NULL || src == NULL)
@@ -255,4 +255,23 @@ kitsune_rmemcpy2(void *dest, const void *src, usize n)
         }
 
         return dest;
+}
+
+void*
+kitsune_memdup(const void *data, usize n, struct kitsune_allocator *allocator)
+{
+        void *copy = allocator->alloc(allocator, n);
+        kitsune_memcpy2(copy, data, n);
+
+        return copy;
+}
+
+void*
+kitsune_memdup2(const void *data, struct kitsune_allocator *allocator)
+{
+        usize n = kitsune_allocated(data);
+        void *copy = allocator->alloc(allocator, n);
+        kitsune_memcpy2(copy, data, n);
+
+        return copy;
 }

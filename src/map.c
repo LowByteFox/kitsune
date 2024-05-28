@@ -1,0 +1,242 @@
+#include <iterator.h>
+#include <assert.h>
+#include <map.h>
+#include <memutils.h>
+#include <dynamic_iterator.h>
+#include <vec.h>
+#include <numbers.h>
+#include <allocator.h>
+
+#define KITSUNE_MAP_CHUNK 16
+#define KITSUNE_MAP_LOAD_FACTOR 0.80
+
+static usize    kitsune_map_capacity(struct kitsune_map*);
+static usize    kitsune_map_total_size(struct kitsune_map*);
+static void     kitsune_map_resize(struct kitsune_map*, usize);
+
+struct kitsune_map
+kitsune_map_init(usize datasize, struct kitsune_allocator *allocator,
+    kitsune_map_hash *hash_fn)
+{
+        struct kitsune_map map = {0};
+        map.allocator = allocator;
+        map.datasize = datasize;
+        map.hash_fn = hash_fn;
+        return map;
+}
+
+void
+kitsune_map_deinit(struct kitsune_map *map, kitsune_map_deletor *deletor)
+{
+        usize i = 0;
+        for (; i < map->size; i++) {
+                struct kitsune_vec *current = map->items + i;
+                if (current->allocator == NULL) continue;
+
+                struct kitsune_iterator iter = kitsune_vec_iterator(current);
+
+                struct kitsune_map_entry *entry = kitsune_iterator_next(&iter);
+                
+                while (entry != NULL) {
+                        map->allocator->free(map->allocator, entry->key);
+                        deletor != NULL ? deletor(map->allocator, entry->value)
+                            : map->allocator->free(map->allocator,
+                            entry->value);
+                        entry = kitsune_iterator_next(&iter);
+                }
+
+                kitsune_vec_deinit(current, NULL);
+        }
+
+        map->allocator->free(map->allocator, map->items);
+        map->items = NULL;
+        map->size = 0;
+}
+
+void
+kitsune_map_insert(struct kitsune_map *map, void *key, usize keylen,
+    void *data)
+{
+        bool first_init = false;
+        if (map->size == 0) {
+                kitsune_map_resize(map, KITSUNE_MAP_CHUNK);
+                first_init = true;
+        }
+
+        if (!first_init && (f64) kitsune_map_total_size(map) / 
+            (f64) kitsune_map_capacity(map) >
+            KITSUNE_MAP_LOAD_FACTOR)
+                kitsune_map_resize(map, map->size * 2);
+
+        struct kitsune_map_entry entry = {0};
+        entry.key = kitsune_memdup(key, keylen, map->allocator);
+        entry.keylen = keylen;
+        entry.value = kitsune_memdup(data, map->datasize, map->allocator);
+
+        u64 hash = map->hash_fn(key, keylen);
+        usize index = hash % kitsune_map_capacity(map);
+        struct kitsune_vec *current = map->items + index;
+        if (current->allocator == NULL)
+                *current = kitsune_vec_init(sizeof(struct kitsune_map_entry),
+                    map->allocator);
+
+        /* Entry will get coppied */
+        kitsune_vec_push(current, &entry);
+        map->size++;
+}
+
+void*
+kitsune_map_remove(struct kitsune_map *map, void *key, usize keylen)
+{
+        if (map->size == 0)
+                return NULL;
+
+        void *data = NULL;
+
+        u64 hash = map->hash_fn(key, keylen);
+        usize index = hash % kitsune_map_capacity(map);
+        struct kitsune_vec *current = map->items + index;
+        if (current->allocator == NULL)
+                return NULL;
+
+        struct kitsune_iterator iter = kitsune_vec_iterator(current);
+        struct kitsune_map_entry *entry = kitsune_iterator_next(&iter);
+        usize i = 0;
+
+        for (; entry != NULL; i++) {
+                if (entry->keylen == keylen &&
+                        kitsune_memcmp2(entry->key, key, keylen) == 0) {
+                        data = entry->value;
+                        map->allocator->free(map->allocator, entry->key);
+                        map->size--;
+                        kitsune_vec_remove(current, i);
+                        break;
+                }
+
+                entry = kitsune_iterator_next(&iter);
+        }
+
+        return data;
+}
+
+void*
+kitsune_map_get(struct kitsune_map *map, void *key, usize keylen)
+{
+        if (map->size == 0)
+                return NULL;
+
+        void *data = NULL;
+
+        u64 hash = map->hash_fn(key, keylen);
+        usize index = hash % kitsune_map_capacity(map);
+        struct kitsune_vec *current = map->items + index;
+        if (current->allocator == NULL)
+                return NULL;
+
+        struct kitsune_iterator iter = kitsune_vec_iterator(current);
+        struct kitsune_map_entry *entry = kitsune_iterator_next(&iter);
+        while (entry != NULL) {
+                if (entry->keylen == keylen &&
+                        kitsune_memcmp2(entry->key, key, keylen) == 0) {
+                        data = entry->value;
+                        break;
+                }
+
+                entry = kitsune_iterator_next(&iter);
+        }
+
+        return data;
+}
+
+bool
+kitsune_map_contains(struct kitsune_map *map, void *key, usize keylen)
+{
+        if (map->size == 0)
+                return false;
+        u64 hash = map->hash_fn(key, keylen);
+        usize index = hash % kitsune_map_capacity(map);
+        struct kitsune_vec *current = map->items + index;
+        if (current->allocator == NULL)
+                return false;
+
+        struct kitsune_iterator iter = kitsune_vec_iterator(current);
+        struct kitsune_map_entry *entry = kitsune_iterator_next(&iter);
+
+        while (entry != NULL) {
+                if (entry->keylen == keylen &&
+                        kitsune_memcmp2(entry->key, key, keylen) == 0) {
+                        return true;
+                }
+
+                entry = kitsune_iterator_next(&iter);
+        }
+
+        return false;
+}
+
+usize
+kitsune_map_size(struct kitsune_map *map)
+{
+        return map->size;
+}
+
+bool
+kitsune_map_empty(struct kitsune_map *map)
+{
+        return map->size == 0;
+}
+
+static usize
+kitsune_map_capacity(struct kitsune_map *map)
+{
+        return kitsune_allocated(map->items) / sizeof(struct kitsune_vec);
+}
+
+static usize
+kitsune_map_total_size(struct kitsune_map *map)
+{
+        usize total = 0;
+        usize i = 0;
+        for (; i < map->size; i++) {
+            total += map->items[i].size;
+        }
+
+        return total;
+}
+
+static void
+kitsune_map_resize(struct kitsune_map *map, usize new_capacity)
+{
+        struct kitsune_vec *new_items = map->allocator->alloc(map->allocator,
+            sizeof(struct kitsune_vec) * new_capacity);
+        kitsune_memset2(new_items, 0, kitsune_allocated(new_items));
+
+        usize i = 0;
+        usize capacity = kitsune_map_capacity(map);
+        for (; i < capacity; i++) {
+                struct kitsune_vec *current = map->items + i;
+                if (current->allocator == NULL) continue;
+
+                struct kitsune_iterator iter = kitsune_vec_iterator(current);
+
+                struct kitsune_map_entry *entry = kitsune_iterator_next(&iter);
+                
+                while (entry != NULL) {
+                        u64 hash = map->hash_fn(entry->key, entry->keylen);
+                        usize index = hash % new_capacity;
+                        struct kitsune_vec *new_current = new_items + index;
+                        if (new_current->allocator == NULL)
+                                *new_current = kitsune_vec_init(
+                                    sizeof(struct kitsune_map_entry),
+                                    map->allocator);
+
+                        kitsune_vec_push(new_current, entry);
+                        entry = kitsune_iterator_next(&iter);
+                }
+
+                kitsune_vec_deinit(current, NULL);
+        }
+        map->allocator->free(map->allocator, map->items);
+
+        map->items = new_items;
+}

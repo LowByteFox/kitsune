@@ -1,6 +1,7 @@
 #ifndef _MEMUTILS_H_
 #define _MEMUTILS_H_
 
+#include <allocator.h>
 #include <numbers.h>
 
 /* Safer variants of ISO functions */
@@ -22,5 +23,11 @@ i32     kitsune_memcmp2(const void*, const void*, usize);
 
 /* Reverse order */
 void   *kitsune_rmemcpy2(void*, const void*, usize);
+
+/* Custom functions */
+void   *kitsune_memdup(const void*, usize, struct kitsune_allocator*);
+
+/* Custom functions for kitsune_allocator allocated pointers */
+void   *kitsune_memdup2(const void*, struct kitsune_allocator*);
 
 #endif

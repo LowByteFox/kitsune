@@ -2,7 +2,7 @@
 #define _MAP_H_
 
 #include <dynamic_iterator.h>
-#include <list.h>
+#include <vec.h>
 #include <numbers.h>
 #include <allocator.h>
 
@@ -14,24 +14,25 @@ struct kitsune_map_entry {
 
 struct kitsune_map {
         struct kitsune_allocator *allocator;
-        struct kitsune_list *items;
+        struct kitsune_vec *items;
+        u64 (*hash_fn)(const void*, usize);
         usize datasize;
         usize size;
 };
 
-typedef void kitsune_map_deletor(struct kitsune_allocator*, void*);
+typedef void    kitsune_map_deletor(struct kitsune_allocator*, void*);
+typedef u64     kitsune_map_hash(const void*, usize);
 
-struct kitsune_map  kitsune_map_init(usize, struct kitsune_allocator*);
+struct kitsune_map  kitsune_map_init(usize, struct kitsune_allocator*,
+                        kitsune_map_hash*);
 void                kitsune_map_deinit(struct kitsune_map*,
                         kitsune_map_deletor*);
 void                kitsune_map_insert(struct kitsune_map*, void*, usize,
                         void*);
 void               *kitsune_map_remove(struct kitsune_map*, void*, usize);
-void               *kitsune_map_at(struct kitsune_map*, void*, usize);
+void               *kitsune_map_get(struct kitsune_map*, void*, usize);
 bool                kitsune_map_contains(struct kitsune_map*, void*, usize);
 usize               kitsune_map_size(struct kitsune_map*);
-usize               kitsune_map_capacity(struct kitsune_map*);
-void                kitsune_map_reserve(struct kitsune_map*, usize);
 bool                kitsune_map_empty(struct kitsune_map*);
 
 /* Iterator API */
