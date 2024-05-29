@@ -4,12 +4,17 @@ CFLAGS = -Wno-unused-command-line-argument -O0 -g -Wall -Wextra -Werror -std=c89
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), FreeBSD)
 	CFLAGS += -lexecinfo
+else ifeq ($(UNAME_S), OpenBSD)
+	CFLAGS += -lexecinfo
+else ifeq ($(UNAME_S), NetBSD)
+	CFLAGS += -lexecinfo
 endif
 
 SRC_DIR = src
 INC_DIR = include
 LIB_DIR = lib
 OBJ_DIR = obj
+DESTDIR ?= /usr/local
 
 LIB_NAME = kitsune
 LIB_VERSION = 0.1.0
@@ -45,5 +50,9 @@ $(LIB_DIR):
 
 clean:
 	rm -rf $(OBJ_DIR) $(LIB_DIR) $(TEST_BIN_DIR)
+
+install:
+	install -m 755 -d $(DESTDIR)/include/kitsune
+	cp -r include/* $(DESTDIR)/include/kitsune/
 
 .PHONY: all test clean
