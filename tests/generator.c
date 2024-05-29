@@ -1,3 +1,5 @@
+#include "alloc/basic.h"
+#include "alloc/traced.h"
 #include <numbers.h>
 #include <generator.h>
 #include <iterator.h>
@@ -30,12 +32,18 @@ deletor(struct kitsune_generator *iter)
 int
 main()
 {
-        struct kitsune_allocator *const a = kitsune_hardened_allocator;
-        struct kitsune_generator iter = kitsune_generator_init(
-            sizeof(int), true, a, generate, deletor);
+        struct kitsune_allocator *a = kitsune_basic_allocator;
+        struct kitsune_traced_allocator gpa = kitsune_traced_allocator_init(a);
 
-        struct generator_data *d = a->alloc(a, sizeof(struct generator_data));
-        d->a = a;
+        struct kitsune_allocator *allocator = 
+            kitsune_traced_allocator_allocator(&gpa);
+
+        struct kitsune_generator iter = kitsune_generator_init(
+            sizeof(int), true, allocator, generate, deletor);
+
+        struct generator_data *d = allocator->alloc(
+            allocator, sizeof(struct generator_data));
+        d->a = allocator;
         /* Just so first number is 0 */
         d->number = -1;
         kitsune_generator_set_context(&iter, d);
@@ -57,5 +65,6 @@ main()
 
         kitsune_generator_deinit(&iter, NULL);
         assert(iter.result_cache.size == 0);
+        kitsune_traced_allocator_deinit(&gpa);
         return 0;
 }

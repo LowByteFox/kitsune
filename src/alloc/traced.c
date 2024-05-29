@@ -63,6 +63,7 @@ destroy(struct kitsune_allocator *a, void *ptr)
         struct allocator_ctx *ctx = a->context;
         struct pointer_trace *trace = kitsune_map_remove(&ctx->pointers,
             &ptr, sizeof(void**));
+
         ctx->base->free(ctx->base, ptr);
         ctx->base->free(ctx->base, trace);
 }

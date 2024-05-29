@@ -17,7 +17,8 @@ allocate(struct kitsune_allocator *a, usize size)
 {
         (void) a;
 
-        struct kitsune_pointer *ptr = malloc(size + sizeof(usize) + CANARY_SIZE);
+        struct kitsune_pointer *ptr = calloc(1, sizeof(struct kitsune_pointer)
+            + size + CANARY_SIZE);
         if (ptr == NULL)
                 return ptr;
 
@@ -64,7 +65,10 @@ destroy(struct kitsune_allocator *a, void *ptr)
 
         if (ptr == NULL)
                 return;
+
         struct kitsune_pointer *p = kitsune_visualize(ptr);
+        if (p == NULL)
+                return;
 
         check_pointer(p->ptr + p->size);
 

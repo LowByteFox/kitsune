@@ -78,7 +78,7 @@ void
         vec->size--;
 
         usize capacity = kitsune_vec_capacity(vec);
-        if (vec->size + VEC_CHUNK == capacity)
+        if (vec->size + VEC_CHUNK == capacity - 1)
                 kitsune_vec_shrink_to_fit(vec);
         return data;
 }

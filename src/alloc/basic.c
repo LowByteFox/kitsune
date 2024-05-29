@@ -1,3 +1,4 @@
+#include "allocator.h"
 #include <alloc/basic.h>
 #include <numbers.h>
 
@@ -12,7 +13,7 @@ allocate(struct kitsune_allocator *a, usize size)
 {
         (void) a;
 
-        void *ptr = malloc(size + sizeof(usize));
+        void *ptr = calloc(1, size + sizeof(usize));
         if (ptr == NULL)
                 return ptr;
 
@@ -25,18 +26,18 @@ reallocate(struct kitsune_allocator *a, void *ptr, usize size)
 {
         (void) a;
 
-        void *orig = NULL;
+        struct kitsune_pointer *orig = NULL;
 
         if (ptr != NULL)
-                orig = MV(ptr, -);
+                orig = kitsune_visualize(ptr);
 
-        orig = realloc(orig, size + sizeof(usize));
+        orig = realloc(orig, sizeof(struct kitsune_pointer) + size);
         if (orig == NULL)
                 return NULL;
 
-        *(usize*) orig = size;
+        orig->size = size;
         
-        return MV(orig, +);
+        return orig->ptr;
 }
 
 static void

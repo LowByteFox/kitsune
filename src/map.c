@@ -40,22 +40,23 @@ kitsune_map_init(usize datasize, struct kitsune_allocator *allocator,
 void
 kitsune_map_deinit(struct kitsune_map *map, kitsune_map_deletor *deletor)
 {
+        struct kitsune_dynamic_iterator iter = kitsune_map_iterator(map);
+        struct kitsune_map_entry *entry = kitsune_iterator_next(&iter.base);
+
+        while (entry != NULL) {
+                map->allocator->free(map->allocator, entry->key);
+
+                deletor != NULL ? deletor(map->allocator, entry->value)
+                    : map->allocator->free(map->allocator, entry->value);
+                entry = kitsune_iterator_next(&iter.base);
+        }
+
+        kitsune_dynamic_iterator_deinit(&iter);
+
         usize i = 0;
         for (; i < map->size; i++) {
                 struct kitsune_vec *current = map->items + i;
                 if (current->allocator == NULL) continue;
-
-                struct kitsune_iterator iter = kitsune_vec_iterator(current);
-
-                struct kitsune_map_entry *entry = kitsune_iterator_next(&iter);
-                
-                while (entry != NULL) {
-                        map->allocator->free(map->allocator, entry->key);
-                        deletor != NULL ? deletor(map->allocator, entry->value)
-                            : map->allocator->free(map->allocator,
-                            entry->value);
-                        entry = kitsune_iterator_next(&iter);
-                }
 
                 kitsune_vec_deinit(current, NULL);
         }
@@ -120,8 +121,9 @@ kitsune_map_remove(struct kitsune_map *map, void *key, usize keylen)
                         kitsune_memcmp2(entry->key, key, keylen) == 0) {
                         data = entry->value;
                         map->allocator->free(map->allocator, entry->key);
+                        void *rmed = kitsune_vec_remove(current, i);
+                        map->allocator->free(map->allocator, rmed);
                         map->size--;
-                        kitsune_vec_remove(current, i);
                         break;
                 }
 

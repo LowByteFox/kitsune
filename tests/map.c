@@ -1,3 +1,4 @@
+#include "alloc/traced.h"
 #include <dynamic_iterator.h>
 #include <iterator.h>
 #include <crashtrace.h>
@@ -14,8 +15,13 @@ int
 main()
 {
         kitsune_install_crashtrace();
-        struct kitsune_allocator *const a = kitsune_hardened_allocator;
-        struct kitsune_map map = kitsune_map_init(sizeof(int), a,
+        struct kitsune_allocator *a = kitsune_hardened_allocator;
+        struct kitsune_traced_allocator gpa = kitsune_traced_allocator_init(a);
+
+        struct kitsune_allocator *allocator = 
+            kitsune_traced_allocator_allocator(&gpa);
+
+        struct kitsune_map map = kitsune_map_init(sizeof(int), allocator,
             kitsune_fnv1a_64);
 
         int val = 7;
@@ -35,9 +41,11 @@ main()
                 item = kitsune_iterator_next(&iter.base);
         }
 
-        memset(NULL, 1, 1);
-
+        kitsune_dynamic_iterator_deinit(&iter);
         kitsune_map_deinit(&map, NULL);
         assert(kitsune_map_empty(&map) == true);
+        kitsune_traced_allocator_deinit(&gpa);
+
+        printf("done!\n");
         return 0;
 }
