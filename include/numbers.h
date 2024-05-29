@@ -5,9 +5,11 @@
 #include <stddef.h>
 #include <unistd.h>
 
+#ifndef bool
 #define true 1
 #define false 0
-typedef int8_t bool;
+#define bool int8_t
+#endif
 
 typedef int8_t i8;
 typedef uint8_t u8;
