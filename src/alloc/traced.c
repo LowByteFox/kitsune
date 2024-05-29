@@ -1,3 +1,4 @@
+#include <crashtrace.h>
 #include <hashes.h>
 #include <iterator.h>
 #include <dynamic_iterator.h>
@@ -95,11 +96,11 @@ kitsune_traced_allocator_deinit(struct kitsune_traced_allocator *traced)
         while (entry != NULL) {
                 struct pointer_trace *trace = entry->value;
                 fprintf(stderr, 
-                    "Memory leak detected at address %p!\n==========\n"
+                    "Memory leak detected at address %p!\n━━━━━━━━━━━━━━━\n"
                     , *(void**) entry->key);
-                backtrace_symbols_fd(trace->stack, trace->size, STDERR_FILENO);
+                kitsune_print_backtrace(trace->size, trace->stack);
                 entry = kitsune_iterator_next(&iter.base);
-                fprintf(stderr, "==========\n");
+                fprintf(stderr, "━━━━━━━━━━━━━━━\n");
         }
 
         kitsune_dynamic_iterator_deinit(&iter);

@@ -4,6 +4,7 @@
 #include <allocator.h>
 #include <alloc/hardened.h>
 #include <stdio.h>
+#include <string.h>
 #include <strings.h>
 #include <map.h>
 #include <hashes.h>
@@ -33,6 +34,8 @@ main()
                 printf("%s\t=> %d\n", (char*) item->key, *(int*) item->value);
                 item = kitsune_iterator_next(&iter.base);
         }
+
+        memset(NULL, 1, 1);
 
         kitsune_map_deinit(&map, NULL);
         assert(kitsune_map_empty(&map) == true);
