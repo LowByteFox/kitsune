@@ -6,19 +6,17 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#define MV(ptr, op) ((u8*) ptr) op sizeof(usize)
-
 static void *
 allocate(struct kitsune_allocator *a, usize size)
 {
         (void) a;
 
-        void *ptr = calloc(1, size + sizeof(usize));
+        struct kitsune_pointer *ptr = calloc(1, size + sizeof(usize));
         if (ptr == NULL)
                 return ptr;
 
-        *(usize*) ptr = size;
-        return MV(ptr, +);
+        ptr->size = size;
+        return ptr->ptr;
 }
 
 static void *
@@ -47,11 +45,9 @@ destroy(struct kitsune_allocator *a, void *ptr)
 
         if (ptr == NULL)
                 return;
-        void *orig = MV(ptr, -);
+        struct kitsune_pointer *orig = kitsune_visualize(ptr);
         free(orig);
 }
-
-#undef MV
 
 struct kitsune_allocator *const kitsune_basic_allocator =
     (struct kitsune_allocator[]) { (struct kitsune_allocator) {

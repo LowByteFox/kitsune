@@ -1,9 +1,9 @@
-#include "alloc/traced.h"
 #include <dynamic_iterator.h>
 #include <iterator.h>
 #include <crashtrace.h>
 #include <allocator.h>
-#include <alloc/hardened.h>
+#include <alloc/basic.h>
+#include <alloc/traced.h>
 #include <stdio.h>
 #include <string.h>
 #include <strings.h>
@@ -15,7 +15,8 @@ int
 main()
 {
         kitsune_install_crashtrace();
-        struct kitsune_allocator *a = kitsune_hardened_allocator;
+        struct kitsune_allocator *a = kitsune_basic_allocator;
+
         struct kitsune_traced_allocator gpa = kitsune_traced_allocator_init(a);
 
         struct kitsune_allocator *allocator = 

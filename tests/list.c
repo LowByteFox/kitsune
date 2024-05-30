@@ -23,12 +23,8 @@ int
 main()
 {
         struct kitsune_allocator *a = kitsune_hardened_allocator;
-        struct kitsune_traced_allocator gpa = kitsune_traced_allocator_init(a);
 
-        struct kitsune_allocator *allocator = 
-            kitsune_traced_allocator_allocator(&gpa);
-
-        struct kitsune_list list = kitsune_list_init(sizeof(int), allocator);
+        struct kitsune_list list = kitsune_list_init(sizeof(int), a);
         int val = 7;
         kitsune_list_push_back(&list, &val);
         val = 4;
@@ -50,6 +46,5 @@ main()
         kitsune_dynamic_iterator_deinit(&iter);
         kitsune_list_deinit(&list, NULL);
         assert(kitsune_list_empty(&list) == true);
-        kitsune_traced_allocator_deinit(&gpa);
         return 0;
 }

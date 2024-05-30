@@ -32,11 +32,7 @@ deletor(struct kitsune_generator *iter)
 int
 main()
 {
-        struct kitsune_allocator *a = kitsune_basic_allocator;
-        struct kitsune_traced_allocator gpa = kitsune_traced_allocator_init(a);
-
-        struct kitsune_allocator *allocator = 
-            kitsune_traced_allocator_allocator(&gpa);
+        struct kitsune_allocator *allocator = kitsune_basic_allocator;
 
         struct kitsune_generator iter = kitsune_generator_init(
             sizeof(int), true, allocator, generate, deletor);
@@ -65,6 +61,5 @@ main()
 
         kitsune_generator_deinit(&iter, NULL);
         assert(iter.result_cache.size == 0);
-        kitsune_traced_allocator_deinit(&gpa);
         return 0;
 }
