@@ -5,17 +5,15 @@
 #include <numbers.h>
 
 struct kitsune_stack {
-    struct kitsune_allocator *allocator;
-    usize chunksize;
-    void *items;
-    usize size;
+        struct kitsune_allocator *allocator;
+        usize chunksize;
+        void *items;
+        usize size;
 };
-
-typedef void kitsune_stack_deletor(struct kitsune_allocator*, void*);
 
 struct kitsune_stack    kitsune_stack_init(usize, struct kitsune_allocator*);
 void                    kitsune_stack_deinit(struct kitsune_stack*,
-                            kitsune_stack_deletor*);
+                            kitsune_allocator_deletor*);
 void                    kitsune_stack_push(struct kitsune_stack*, void*);
 /*
  * POP ALLOCATES memory for the removed element

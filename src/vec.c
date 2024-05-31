@@ -37,7 +37,7 @@ kitsune_vec_init(usize chunksize, struct kitsune_allocator *allocator)
 }
 
 void
-kitsune_vec_deinit(struct kitsune_vec *vec, kitsune_vec_deletor *deletor)
+kitsune_vec_deinit(struct kitsune_vec *vec, kitsune_allocator_deletor *deletor)
 {
         void *iter = kitsune_vec_begin(vec);
         void *end = kitsune_vec_end(vec);

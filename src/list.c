@@ -34,7 +34,7 @@ kitsune_list_init(usize datasize, struct kitsune_allocator *allocator)
 }
 
 void
-kitsune_list_deinit(struct kitsune_list *list, kitsune_list_deletor *deletor)
+kitsune_list_deinit(struct kitsune_list *list, kitsune_allocator_deletor *deletor)
 {
         struct kitsune_list_node *current = list->head;
         struct kitsune_list_node *next = NULL;
@@ -93,6 +93,24 @@ kitsune_list_push_front(struct kitsune_list *list, void *data)
         node->next = list->head;
         list->head->previous = node;
         list->head = node;
+}
+
+void*
+kitsune_list_back(struct kitsune_list *list)
+{
+        if (list->tail == NULL)
+                return NULL;
+
+        return list->tail->data;
+}
+
+void*
+kitsune_list_front(struct kitsune_list *list)
+{
+        if (list->head == NULL)
+                return NULL;
+
+        return list->head->data;
 }
 
 void
@@ -200,7 +218,7 @@ kitsune_list_size(struct kitsune_list *list)
 
 void
 kitsune_list_resize(struct kitsune_list *list, usize size, void *def,
-    kitsune_list_deletor *deletor)
+    kitsune_allocator_deletor *deletor)
 {
         if (size > list->size) {
                 usize i = 0;

@@ -14,7 +14,7 @@
 - [x] Iterator API (Static + Dynamic)
 - [x] Generator API
 - [x] Stack
-- [ ] Queue
+- [x] Queue & Deque (Queue is missing and Deque is missing Iterator API)
 - [x] Reference Counter
 - [x] Linked List
 - [x] Hash Functions (FNV-1a, DJB2, SDBM)

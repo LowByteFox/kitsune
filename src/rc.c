@@ -1,3 +1,4 @@
+#include <allocator.h>
 #include <rc.h>
 
 struct kitsune_rc*
@@ -27,7 +28,7 @@ kitsune_rc_deinit(struct kitsune_rc *rc)
 }
 
 void
-kitsune_rc_set_deletor(struct kitsune_rc *rc, kitsune_rc_deletor *deletor)
+kitsune_rc_set_deletor(struct kitsune_rc *rc, kitsune_allocator_deletor *deletor)
 {
         rc->deletor = deletor;
 }

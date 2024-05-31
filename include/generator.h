@@ -41,6 +41,6 @@ void                            kitsune_generator_continue(
                                     struct kitsune_generator*);
 void                            kitsune_generator_deinit(
                                     struct kitsune_generator*,
-                                    kitsune_vec_deletor*);
+                                    kitsune_allocator_deletor*);
 
 #endif

@@ -16,6 +16,8 @@ struct kitsune_allocator {
         void *(*resize)(struct kitsune_allocator *const, void*, usize);
 };
 
+typedef void kitsune_allocator_deletor(struct kitsune_allocator*, void*);
+
 void   *kitsune_allocator_alloc(struct kitsune_allocator *const, usize);
 void   *kitsune_allocator_resize(struct kitsune_allocator *const, void*, 
             usize);

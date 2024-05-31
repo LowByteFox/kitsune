@@ -7,8 +7,8 @@
 #include <numbers.h>
 #include <allocator.h>
 
-#define KITSUNE_MAP_CHUNK 16
-#define KITSUNE_MAP_LOAD_FACTOR 0.9
+#define MAP_CHUNK 16
+#define MAP_LOAD_FACTOR 0.9
 
 static usize    kitsune_map_capacity(struct kitsune_map*);
 static usize    kitsune_map_total_size(struct kitsune_map*);
@@ -38,7 +38,7 @@ kitsune_map_init(usize datasize, struct kitsune_allocator *allocator,
 }
 
 void
-kitsune_map_deinit(struct kitsune_map *map, kitsune_map_deletor *deletor)
+kitsune_map_deinit(struct kitsune_map *map, kitsune_allocator_deletor *deletor)
 {
         usize i = 0;
         usize capacity = kitsune_map_capacity(map);
@@ -70,13 +70,12 @@ kitsune_map_insert(struct kitsune_map *map, void *key, usize keylen,
 {
         bool first_init = false;
         if (map->size == 0) {
-                kitsune_map_resize(map, KITSUNE_MAP_CHUNK);
+                kitsune_map_resize(map, MAP_CHUNK);
                 first_init = true;
         }
 
         if (!first_init && (f64) kitsune_map_total_size(map) / 
-            (f64) kitsune_map_capacity(map) >
-            KITSUNE_MAP_LOAD_FACTOR)
+            (f64) (kitsune_map_capacity(map) * MAP_CHUNK ) > MAP_LOAD_FACTOR)
                 kitsune_map_resize(map, map->size * 2);
 
         struct kitsune_map_entry entry = {0};

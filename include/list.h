@@ -19,16 +19,16 @@ struct kitsune_list {
     usize size;
 };
 
-typedef void kitsune_list_deletor(struct kitsune_allocator*, void*);
-
 struct kitsune_list kitsune_list_init(usize, struct kitsune_allocator*);
 void                kitsune_list_deinit(struct kitsune_list*,
-                        kitsune_list_deletor*);
+                        kitsune_allocator_deletor*);
 void                kitsune_list_append(struct kitsune_list*,
                         struct kitsune_list*);
 void                kitsune_list_push_back(struct kitsune_list*, void*);
 void                kitsune_list_push_front(struct kitsune_list*, void*);
 void                kitsune_list_insert(struct kitsune_list*, usize, void*);
+void               *kitsune_list_back(struct kitsune_list*);
+void               *kitsune_list_front(struct kitsune_list*);
 /*
  * BOTH POP AND REMOVE return ALLCATED memory by the linked list!
  * Don't forget to free it!
@@ -40,7 +40,7 @@ void               *kitsune_list_at(struct kitsune_list*, usize);
 bool                kitsune_list_contains(struct kitsune_list*, void*);
 usize               kitsune_list_size(struct kitsune_list*);
 void                kitsune_list_resize(struct kitsune_list*, usize, void*,
-                        kitsune_list_deletor*);
+                        kitsune_allocator_deletor*);
 bool                kitsune_list_empty(struct kitsune_list*);
 
 /* Iterator API */

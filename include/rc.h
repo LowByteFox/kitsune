@@ -14,15 +14,13 @@ struct kitsune_rc {
         usize count;
 };
 
-typedef void kitsune_rc_deletor(struct kitsune_allocator*, void*);
-
 /*
  * The pointer is expected to be already allocated
  */
 struct kitsune_rc  *kitsune_rc_init(void*, struct kitsune_allocator*);
 void                kitsune_rc_deinit(struct kitsune_rc*);
 void                kitsune_rc_set_deletor(struct kitsune_rc*,
-                        kitsune_rc_deletor*);
+                        kitsune_allocator_deletor*);
 /*
  * Use this function whenever you assign kitsune_rc to another variable
  * When you want to return kitsune_rc, you don't need to deinit it

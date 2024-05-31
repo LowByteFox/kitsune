@@ -20,13 +20,12 @@ struct kitsune_map {
         usize size;
 };
 
-typedef void        kitsune_map_deletor(struct kitsune_allocator*, void*);
 typedef u64         kitsune_map_hash(const void*, usize);
 
 struct kitsune_map  kitsune_map_init(usize, struct kitsune_allocator*,
                         kitsune_map_hash*);
 void                kitsune_map_deinit(struct kitsune_map*,
-                        kitsune_map_deletor*);
+                        kitsune_allocator_deletor*);
 void                kitsune_map_insert(struct kitsune_map*, void*, usize,
                         void*);
 void               *kitsune_map_remove(struct kitsune_map*, void*, usize);

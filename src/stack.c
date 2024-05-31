@@ -24,7 +24,7 @@ kitsune_stack_init(usize chunksize, struct kitsune_allocator *allocator)
 
 void
 kitsune_stack_deinit(struct kitsune_stack *stack,
-    kitsune_stack_deletor *deletor)
+    kitsune_allocator_deletor *deletor)
 {
         void *iter = kitsune_stack_begin(stack);
         void *end = kitsune_stack_end(stack);

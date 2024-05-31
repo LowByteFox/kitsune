@@ -1,3 +1,4 @@
+#include <allocator.h>
 #include <vec.h>
 #include <numbers.h>
 #include <iterator.h>
@@ -38,7 +39,7 @@ kitsune_generator_continue(struct kitsune_generator *generator)
 
 void
 kitsune_generator_deinit(struct kitsune_generator *generator,
-    kitsune_vec_deletor *deletor)
+    kitsune_allocator_deletor *deletor)
 {
         if (generator->cache_the_result)
                 kitsune_vec_deinit(&generator->result_cache, deletor);
