@@ -20,8 +20,8 @@ struct kitsune_map {
         usize size;
 };
 
-typedef void    kitsune_map_deletor(struct kitsune_allocator*, void*);
-typedef u64     kitsune_map_hash(const void*, usize);
+typedef void        kitsune_map_deletor(struct kitsune_allocator*, void*);
+typedef u64         kitsune_map_hash(const void*, usize);
 
 struct kitsune_map  kitsune_map_init(usize, struct kitsune_allocator*,
                         kitsune_map_hash*);
@@ -37,5 +37,7 @@ bool                kitsune_map_empty(struct kitsune_map*);
 
 /* Iterator API */
 struct kitsune_dynamic_iterator kitsune_map_iterator(struct kitsune_map*);
+struct kitsune_dynamic_iterator kitsune_map_reverse_iterator(
+                                    struct kitsune_map*);
 
 #endif

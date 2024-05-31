@@ -11,18 +11,23 @@
 #include <fcntl.h>
 
 void
-kitsune_print_backtrace(usize size, void **arr)
+kitsune_print_backtrace(usize size, void **arr, bool skip)
 {
         char **strs = backtrace_symbols_fmt(arr, size, "%a %f");
         usize i;
 
         for (i = 0; i < size; free(strs[i]), i++) {
+                if (i == 0 && skip)
+                        continue;
                 /* 
                  * The 1 is being added so when strtok places 0 there, the file
                  * path is accesible
                  */
                 char *file = strstr(strs[i], " ") + 1;
                 char *addr = strtok(strs[i], " ");
+
+                if (strncmp(file, "???", 3) == 0)
+                        continue;
 
                 int pipefd[2];
                 pid_t pid;
@@ -82,8 +87,15 @@ handler(int sig)
 
         size = backtrace(array, 16);
 
-        fprintf(stderr, "\n!!! Recieved signal: %s\n", strsignal(sig));
-        kitsune_print_backtrace(size, array);
+        fprintf(stderr, "\n!!! Crashtrace recieved a signal: %s\n",
+            strsignal(sig));
+#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
+        kitsune_print_backtrace(size, array, true);
+#elif defined(__linux__)
+        backtrace_symbols_fd(array, 16, STDERR_FILENO);
+#else
+#error "Unknown platform, does it have backtrace? If yes, check and make PR"
+#endif
         exit(1);
 }
 

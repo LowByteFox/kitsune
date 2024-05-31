@@ -82,10 +82,10 @@ kitsune_traced_allocator_init(struct kitsune_allocator *allocator)
 void
 kitsune_traced_allocator_deinit(struct kitsune_traced_allocator *traced)
 {
-        if (traced->allocator.context == NULL) {
-                fprintf(stderr, "Did you even create the allocator?\n");
-                abort();
-        }
+        bool leaked = false;
+
+        if (traced->allocator.context == NULL)
+            return;
 
         struct allocator_ctx *ctx = traced->allocator.context;
 
@@ -94,12 +94,15 @@ kitsune_traced_allocator_deinit(struct kitsune_traced_allocator *traced)
 
         struct kitsune_map_entry *entry = kitsune_iterator_next(&iter.base);
 
+        if (entry != NULL)
+                leaked = true;
+
         while (entry != NULL) {
                 struct pointer_trace *trace = entry->value;
                 fprintf(stderr, 
-                    "Memory leak detected at address %p!\n━━━━━━━━━━━━━━━\n"
+                    "Memory leaked at address %p!\n━━━━━━━━━━━━━━━\n"
                     , *(void**) entry->key);
-                kitsune_print_backtrace(trace->size, trace->stack);
+                kitsune_print_backtrace(trace->size, trace->stack, true);
                 entry = kitsune_iterator_next(&iter.base);
                 fprintf(stderr, "━━━━━━━━━━━━━━━\n");
         }
@@ -107,7 +110,11 @@ kitsune_traced_allocator_deinit(struct kitsune_traced_allocator *traced)
         kitsune_dynamic_iterator_deinit(&iter);
         kitsune_map_deinit(&ctx->pointers, NULL);
         ctx->base->free(ctx->base, traced->allocator.context);
-        exit(1);
+
+        if (leaked) {
+                fprintf(stderr, "*** memory leak detected ***: terminated\n");
+                abort();
+        }
 }
 
 struct kitsune_allocator*

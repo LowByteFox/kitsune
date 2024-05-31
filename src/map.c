@@ -237,6 +237,28 @@ kitsune_map_iterator(struct kitsune_map *map)
         return iter;
 }
 
+struct kitsune_dynamic_iterator
+kitsune_map_reverse_iterator(struct kitsune_map *map)
+{
+        struct kitsune_dynamic_iterator iter = kitsune_dynamic_iterator_init(
+            kitsune_map_iterator_next,
+            kitsune_map_iterator_previous,
+            kitsune_map_iterator_deletor);
+        iter.base.direction = SUBSTRACTION;
+
+        struct map_iter_ctx *ctx = map->allocator->alloc(map->allocator,
+            sizeof(struct map_iter_ctx));
+        ctx->allocator = map->allocator;
+        ctx->map = map;
+        ctx->current = NULL;
+        ctx->pos = kitsune_map_capacity(map) - 1;
+        ctx->array_pos = 0;
+
+        kitsune_dynamic_iterator_set_context(&iter, ctx);
+
+        return iter;
+}
+
 static void
 kitsune_map_resize(struct kitsune_map *map, usize new_capacity)
 {
@@ -281,7 +303,10 @@ kitsune_map_iterator_next(struct kitsune_dynamic_iterator *iter)
 start:
         if (ctx->current == NULL) {
                 usize capacity = kitsune_map_capacity(ctx->map);
-                for (; ctx->pos < capacity; ctx->pos++) {
+                usize direction = iter->base.direction == ADDITION ? 1 : -1;
+
+                for (; ctx->pos < capacity && ctx->pos >= 0;
+                    ctx->pos += direction) {
                         struct kitsune_vec *current = ctx->map->items +
                             ctx->pos;
                         if (current->allocator == NULL) continue;
@@ -289,18 +314,24 @@ start:
                         ctx->current = current;
                         break;
                 }
+
+                if (ctx->current != NULL &&
+                    iter->base.direction == SUBSTRACTION)
+                        ctx->array_pos = ctx->current->size - 1;
         }
 
         if (ctx->current == NULL)
                 return NULL;
 
-        struct kitsune_map_entry *item = kitsune_vec_at(ctx->current, ctx->array_pos);
-        ctx->array_pos++;
+        struct kitsune_map_entry *item = kitsune_vec_at(ctx->current,
+            ctx->array_pos);
+
+        ctx->array_pos += iter->base.direction == ADDITION ? 1 : -1;
 
         if (item == NULL) {
                 ctx->current = NULL;
                 ctx->array_pos = 0;
-                ctx->pos++;
+                ctx->pos += iter->base.direction == ADDITION ? 1 : -1;
                 goto start;
         }
 

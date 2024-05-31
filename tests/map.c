@@ -34,7 +34,8 @@ main()
         val = 4;
         kitsune_map_insert(&map, "owo", 4, &val);
 
-        struct kitsune_dynamic_iterator iter = kitsune_map_iterator(&map);
+        struct kitsune_dynamic_iterator iter =
+            kitsune_map_reverse_iterator(&map);
         struct kitsune_map_entry *item = kitsune_iterator_next(&iter.base);
 
         while (item != NULL) {
