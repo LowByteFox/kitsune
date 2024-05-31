@@ -38,10 +38,15 @@ main()
             kitsune_map_reverse_iterator(&map);
         struct kitsune_map_entry *item = kitsune_iterator_next(&iter.base);
 
-        while (item != NULL) {
+        printf("%s\t=> %d\n", (char*) item->key, *(int*) item->value);
+
+        item = kitsune_iterator_next(&iter.base);
+        if (item != NULL)
                 printf("%s\t=> %d\n", (char*) item->key, *(int*) item->value);
-                item = kitsune_iterator_next(&iter.base);
-        }
+
+        item = kitsune_iterator_previous(&iter.base);
+        if (item != NULL)
+                printf("%s\t=> %d\n", (char*) item->key, *(int*) item->value);
 
         kitsune_dynamic_iterator_deinit(&iter);
         kitsune_map_deinit(&map, NULL);

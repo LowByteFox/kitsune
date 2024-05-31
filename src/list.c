@@ -345,52 +345,22 @@ kitsune_list_iterator_next(struct kitsune_dynamic_iterator *iter)
 static void*
 kitsune_list_iterator_previous(struct kitsune_dynamic_iterator *iter)
 {
-        struct list_iter_ctx *ctx = iter->context;
-        void *item = ctx->current->data;
+        enum kitsune_iterator_direction dir = iter->base.direction;
+        enum kitsune_iterator_direction swap = ADDITION;
 
-        if (iter->base.direction == ADDITION) {
-                if (ctx->current == NULL && ctx->previous->previous == NULL)
-                        return NULL;
-                else if (ctx->current == NULL && ctx->previous->previous !=
-                    NULL) {
-                        ctx->current = ctx->previous->previous;
-                        ctx->previous = ctx->current;
-                }
-        } else {
-                if (ctx->current == NULL && ctx->previous->next == NULL)
-                        return NULL;
-                else if (ctx->current == NULL && ctx->previous->next !=
-                    NULL) {
-                        ctx->current = ctx->previous->next;
-                        ctx->previous = ctx->current;
-                }
+        switch (dir) {
+        case ADDITION:
+                swap = SUBSTRACTION;
+                break;
+        case SUBSTRACTION:
+                swap = ADDITION;
+                break;
         }
 
-        if (iter->base.direction == ADDITION) {
-                if (ctx->current->previous == NULL) {
-                        ctx->current = ctx->list->tail;
-                        if (ctx->circular) {
-                                ctx->current = ctx->list->tail; 
-                                ctx->previous = ctx->current;
-                        } else
-                                return item;
-                } else {
-                        ctx->current = ctx->current->previous;
-                        ctx->previous = ctx->current;
-                }
-        } else {
-                if (ctx->current->next == NULL) {
-                        ctx->current = ctx->current->next;
-                        if (ctx->circular) {
-                                ctx->current = ctx->list->head;
-                                ctx->previous = ctx->current;
-                        } else
-                                return item;
-                } else {
-                        ctx->current = ctx->current->next;
-                        ctx->previous = ctx->current;
-                }
-        }
+        iter->base.direction = swap;
+
+        void *item = kitsune_list_iterator_next(iter);
+        iter->base.direction = dir;
 
         return item;
 }

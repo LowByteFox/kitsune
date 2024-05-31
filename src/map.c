@@ -8,7 +8,7 @@
 #include <allocator.h>
 
 #define KITSUNE_MAP_CHUNK 16
-#define KITSUNE_MAP_LOAD_FACTOR 0.80
+#define KITSUNE_MAP_LOAD_FACTOR 0.9
 
 static usize    kitsune_map_capacity(struct kitsune_map*);
 static usize    kitsune_map_total_size(struct kitsune_map*);
@@ -341,9 +341,24 @@ start:
 static void*
 kitsune_map_iterator_previous(struct kitsune_dynamic_iterator *iter)
 {
-        (void) iter;
-        /* Unimplemented yet! */
-        return NULL;
+        enum kitsune_iterator_direction dir = iter->base.direction;
+        enum kitsune_iterator_direction swap = ADDITION;
+
+        switch (dir) {
+        case ADDITION:
+                swap = SUBSTRACTION;
+                break;
+        case SUBSTRACTION:
+                swap = ADDITION;
+                break;
+        }
+
+        iter->base.direction = swap;
+
+        void *item = kitsune_map_iterator_next(iter);
+        iter->base.direction = dir;
+
+        return item;
 }
 
 static void

@@ -1,4 +1,3 @@
-#include "alloc/traced.h"
 #include <numbers.h>
 #include <iterator.h>
 #include <dynamic_iterator.h>
@@ -41,7 +40,13 @@ main()
         val = 17;
         kitsune_list_push_back(&list, &val);
         printf("Added 17\n");
-        iterate(&iter);
+        int *current = kitsune_iterator_next(&iter.base);
+        if (current != NULL)
+                printf("%d\n", *current);
+
+        current = kitsune_iterator_previous(&iter.base);
+        if (current != NULL)
+                printf("%d\n", *current);
 
         kitsune_dynamic_iterator_deinit(&iter);
         kitsune_list_deinit(&list, NULL);
