@@ -73,7 +73,12 @@ kitsune_deque_back(struct kitsune_deque *deque)
         if (deque->size == 0)
                 return NULL;
 
-        return kitsune_vec_at(&deque->back, deque->back.size - 1);
+        if (deque->back.size > 0)
+                return kitsune_vec_at(&deque->back, deque->back.size - 1);
+        else if (deque->front.size > 0)
+                return kitsune_vec_at(&deque->front, 0);
+
+        return NULL;
 }
 
 void*
@@ -82,7 +87,12 @@ kitsune_deque_front(struct kitsune_deque *deque)
         if (deque->size == 0)
                 return NULL;
 
-        return kitsune_vec_at(&deque->front, deque->front.size - 1);
+        if (deque->front.size > 0)
+                return kitsune_vec_at(&deque->front, deque->front.size - 1);
+        else if (deque->back.size > 0)
+                return kitsune_vec_at(&deque->back, 0);
+
+        return NULL;
 }
 
 void*
@@ -92,6 +102,14 @@ kitsune_deque_pop_back(struct kitsune_deque *deque)
                 return NULL;
 
         deque->size--;
+
+        if (deque->back.size == 0) {
+                while (deque->front.size > 0) {
+                        void *item = kitsune_vec_pop(&deque->front);
+                        kitsune_vec_push(&deque->back, item);
+                        deque->allocator->free(deque->allocator, item);
+                }
+        }
         return kitsune_vec_pop(&deque->back);
 }
 
@@ -102,6 +120,14 @@ kitsune_deque_pop_front(struct kitsune_deque *deque)
                 return NULL;
 
         deque->size--;
+
+        if (deque->front.size == 0) {
+                while (deque->back.size > 0) {
+                        void *item = kitsune_vec_pop(&deque->back);
+                        kitsune_vec_push(&deque->front, item);
+                        deque->allocator->free(deque->allocator, item);
+                }
+        }
         return kitsune_vec_pop(&deque->front);
 }
 
@@ -184,6 +210,7 @@ kitsune_deque_iterator_next(struct kitsune_dynamic_iterator *iter)
 {
         struct deque_iter_ctx *ctx = iter->context;
         void *item = kitsune_deque_get(ctx->deque, ctx->pos);
+        
         if (iter->base.direction == ADDITION)
                 ctx->pos++;
         else {
@@ -204,6 +231,7 @@ kitsune_deque_iterator_previous(struct kitsune_dynamic_iterator *iter)
 {
         struct deque_iter_ctx *ctx = iter->context;
         void *item = kitsune_deque_get(ctx->deque, ctx->pos);
+
         if (iter->base.direction == ADDITION) {
                 if (ctx->pos == 0)
                         return NULL;

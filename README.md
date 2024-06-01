@@ -14,19 +14,20 @@
 - [x] Iterator API (Static + Dynamic)
 - [x] Generator API
 - [x] Stack
-- [x] Queue & Deque (Queue is missing and Deque is missing Iterator API)
+- [x] Queue
+- [x] Deque
 - [x] Reference Counter
 - [x] Linked List
 - [x] Hash Functions (FNV-1a, DJB2, SDBM)
 - [x] Crashtrace
 - [x] HashMap - Iterator.previous is not implemented
 - [x] Traced Allocator
-- [ ] Arena Allocator
-- [ ] Tree Structures (Binary Tree, BST, Trie - 3 variants)
 - [ ] String Utilities
 - [ ] UTF-8 Compatible Strings
+- [ ] Arena Allocator
 - [ ] Buffered Allocator
 - [ ] Path Utilities
 - [ ] Command Utilities
 - [ ] Base64 Encoder/Decoder
+- [ ] Tree Structures (Binary Tree, BST, Trie - 3 variants)
 - [ ] Much More Soon

@@ -136,6 +136,8 @@ void*
 kitsune_list_pop_back(struct kitsune_list *list)
 {
         struct kitsune_list_node *node = list->tail;
+        if (node == NULL)
+                return NULL;
         list->tail = node->previous;
 
         void *data = node->data;
@@ -149,6 +151,8 @@ void*
 kitsune_list_pop_front(struct kitsune_list *list)
 {
         struct kitsune_list_node *node = list->head;
+        if (node == NULL)
+                return NULL;
         list->head = node->next;
 
         void *data = node->data;
