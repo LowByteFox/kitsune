@@ -22,8 +22,10 @@
 - [x] Crashtrace
 - [x] HashMap - Iterator.previous is not implemented
 - [x] Traced Allocator
-- [ ] String Utilities
+- [x] UTF-8 API (will add some more later)
 - [ ] UTF-8 Compatible Strings
+- [ ] String Utilities
+- [ ] String Buffer
 - [ ] Arena Allocator
 - [ ] Buffered Allocator
 - [ ] Path Utilities
