@@ -1,3 +1,6 @@
+#include <iterator.h>
+#include <dynamic_iterator.h>
+#include <numbers.h>
 #include <allocator.h>
 #include <alloc/hardened.h>
 #include <stdio.h>
@@ -20,16 +23,20 @@ main()
         val = 40;
         kitsune_deque_push_back(&deq, &val);
         val = 5;
-        kitsune_deque_insert(&deq, 3, &val);
+        kitsune_deque_insert(&deq, 3, &val); /* 20, 10, 30, 5, 40 */
 
-        printf("Front %d\n", *(int*) kitsune_deque_front(&deq));
-        printf("Back %d\n", *(int*) kitsune_deque_back(&deq));
+        struct kitsune_dynamic_iterator iter = kitsune_deque_iterator(&deq);
 
-        kitsune_deque_pop_front(&deq);
-        printf("Front after %d\n", *(int*) kitsune_deque_front(&deq));
-        kitsune_deque_pop_back(&deq);
-        printf("Back after %d\n", *(int*) kitsune_deque_back(&deq));
+        int *item = kitsune_iterator_next(&iter.base);
+        while (item != NULL) {
+                printf("%d ", *item);
+                item = kitsune_iterator_next(&iter.base);
+        }
+        putchar(10);
 
+        kitsune_dynamic_iterator_deinit(&iter);
         kitsune_deque_deinit(&deq, NULL);
+
+        assert(kitsune_deque_empty(&deq) == true);
         return 0;
 }

@@ -284,6 +284,7 @@ kitsune_vec_dynamic_iterator_next(struct kitsune_dynamic_iterator *iter)
 { 
         struct vec_iter_ctx *ctx = iter->context;
         void *item = kitsune_vec_at(ctx->vec, ctx->pos);
+
         if (iter->base.direction == ADDITION)
                 ctx->pos++;
         else {

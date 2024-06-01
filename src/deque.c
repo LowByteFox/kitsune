@@ -6,6 +6,18 @@
 #include <allocator.h>
 #include <deque.h>
 
+static void                        *kitsune_deque_iterator_next(
+                                        struct kitsune_dynamic_iterator*);
+static void                        *kitsune_deque_iterator_previous(
+                                        struct kitsune_dynamic_iterator*);
+static void                         kitsune_deque_iterator_deletor(
+                                        struct kitsune_dynamic_iterator*);
+
+struct deque_iter_ctx {
+        struct kitsune_allocator *allocator;
+        struct kitsune_deque *deque;
+        usize pos;
+};
 
 struct kitsune_deque
 kitsune_deque_init(usize chunksize, struct kitsune_allocator *allocator)
@@ -13,6 +25,7 @@ kitsune_deque_init(usize chunksize, struct kitsune_allocator *allocator)
         struct kitsune_deque deque = {0};
         deque.back = kitsune_vec_init(chunksize, allocator);
         deque.front = kitsune_vec_init(chunksize, allocator);
+        deque.allocator = allocator;
         deque.size = 0;
 
         return deque;
@@ -128,14 +141,86 @@ kitsune_deque_empty(struct kitsune_deque *deque)
 {
         return deque->size == 0;
 }
-/*
+
 struct kitsune_dynamic_iterator
 kitsune_deque_iterator(struct kitsune_deque *deque)
 {
+        struct deque_iter_ctx *ctx = deque->allocator->alloc(deque->allocator,
+            sizeof(struct deque_iter_ctx));
+        ctx->allocator = deque->allocator;
+        ctx->deque = deque;
+        ctx->pos = 0;
+
+        struct kitsune_dynamic_iterator iter = kitsune_dynamic_iterator_init(
+            kitsune_deque_iterator_next,
+            kitsune_deque_iterator_previous,
+            kitsune_deque_iterator_deletor);
+        kitsune_dynamic_iterator_set_context(&iter, ctx);
+
+        return iter;
 }
 
 struct kitsune_dynamic_iterator
 kitsune_deque_reverse_iterator(struct kitsune_deque *deque)
 {
+        struct deque_iter_ctx *ctx = deque->allocator->alloc(deque->allocator,
+            sizeof(struct deque_iter_ctx));
+        ctx->allocator = deque->allocator;
+        ctx->deque = deque;
+        ctx->pos = 0;
+
+        struct kitsune_dynamic_iterator iter = kitsune_dynamic_iterator_init(
+            kitsune_deque_iterator_next,
+            kitsune_deque_iterator_previous,
+            kitsune_deque_iterator_deletor);
+        iter.base.direction = SUBSTRACTION;
+        kitsune_dynamic_iterator_set_context(&iter, ctx);
+
+        return iter;
 }
-*/
+
+static void*
+kitsune_deque_iterator_next(struct kitsune_dynamic_iterator *iter)
+{
+        struct deque_iter_ctx *ctx = iter->context;
+        void *item = kitsune_deque_get(ctx->deque, ctx->pos);
+        if (iter->base.direction == ADDITION)
+                ctx->pos++;
+        else {
+                if (ctx->pos == 0)
+                        return NULL;
+                else
+                        ctx->pos--;
+        }
+
+        if (item == NULL)
+                ctx->pos--;
+
+        return item;
+}
+
+static void*
+kitsune_deque_iterator_previous(struct kitsune_dynamic_iterator *iter)
+{
+        struct deque_iter_ctx *ctx = iter->context;
+        void *item = kitsune_deque_get(ctx->deque, ctx->pos);
+        if (iter->base.direction == ADDITION) {
+                if (ctx->pos == 0)
+                        return NULL;
+                else
+                        ctx->pos--;
+        } else
+                ctx->pos++;
+
+        if (item == NULL)
+                ctx->pos--;
+
+        return item;
+}
+
+static void
+kitsune_deque_iterator_deletor(struct kitsune_dynamic_iterator *iter)
+{
+        struct deque_iter_ctx *ctx = iter->context;
+        ctx->allocator->free(ctx->allocator, iter->context);
+}

@@ -7,6 +7,7 @@
 #include <numbers.h>
 
 struct kitsune_deque {
+        struct kitsune_allocator *allocator;
         struct kitsune_vec front;
         struct kitsune_vec back;
         usize size;
