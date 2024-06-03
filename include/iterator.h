@@ -12,7 +12,7 @@ enum kitsune_iterator_direction {
 enum kitsune_iterator_type {
         STATIC,
         GENERATOR,
-        DYNAMIC,
+        DYNAMIC
 };
 
 /* 

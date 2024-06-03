@@ -20,7 +20,8 @@
 - [x] Linked List
 - [x] Hash Functions (FNV-1a, DJB2, SDBM)
 - [x] Crashtrace
-- [x] HashMap - Iterator.previous is not implemented
+- [x] HashMap
+- [ ] Tree Structures (Binary Tree, BST, Trie - 3 variants)
 - [x] Traced Allocator
 - [x] UTF-8 API (will add some more later)
 - [ ] UTF-8 Compatible Strings
@@ -31,5 +32,5 @@
 - [ ] Path Utilities
 - [ ] Command Utilities
 - [ ] Base64 Encoder/Decoder
-- [ ] Tree Structures (Binary Tree, BST, Trie - 3 variants)
+- [ ] Coroutines
 - [ ] Much More Soon
