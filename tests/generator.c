@@ -30,7 +30,11 @@ deletor(struct kitsune_generator *iter)
 }
 
 int
+#ifdef ENABLE_RT
+async_main()
+#else
 main()
+#endif
 {
         struct kitsune_allocator *allocator = kitsune_basic_allocator;
 

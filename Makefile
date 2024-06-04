@@ -10,6 +10,10 @@ else ifeq ($(UNAME_S), NetBSD)
 	CFLAGS += -lexecinfo
 endif
 
+ifdef ENABLE_RT
+	CFLAGS += -DENABLE_RT
+endif
+
 SRC_DIR = src
 INC_DIR = include
 LIB_DIR = lib

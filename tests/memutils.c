@@ -2,7 +2,11 @@
 #include <assert.h>
 
 int
+#ifdef ENABLE_RT
+async_main()
+#else
 main()
+#endif
 {
         char buffer[6 + 3] = "Hello";
 

@@ -3,7 +3,11 @@
 #include <assert.h>
 
 int
+#ifdef ENABLE_RT
+async_main()
+#else
 main()
+#endif
 {
         struct kitsune_allocator *const a = kitsune_hardened_allocator;
         int *arr = a->alloc(a, sizeof(int) * 2);

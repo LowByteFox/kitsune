@@ -19,7 +19,11 @@ iterate(struct kitsune_dynamic_iterator *iter)
 }
 
 int
+#ifdef ENABLE_RT
+async_main()
+#else
 main()
+#endif
 {
         struct kitsune_allocator *a = kitsune_hardened_allocator;
 

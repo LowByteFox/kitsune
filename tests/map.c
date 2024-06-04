@@ -12,7 +12,11 @@
 #include <assert.h>
 
 int
+#ifdef ENABLE_RT
+async_main()
+#else
 main()
+#endif
 {
         kitsune_install_crashtrace();
         struct kitsune_allocator *a = kitsune_basic_allocator;

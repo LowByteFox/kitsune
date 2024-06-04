@@ -21,6 +21,7 @@
 - [x] Hash Functions (FNV-1a, DJB2, SDBM)
 - [x] Crashtrace
 - [x] HashMap
+- [ ] HashSet
 - [ ] Tree Structures (Binary Tree, BST, Trie - 3 variants)
 - [x] Traced Allocator
 - [x] UTF-8 API (will add some more later)
@@ -32,5 +33,5 @@
 - [ ] Path Utilities
 - [ ] Command Utilities
 - [ ] Base64 Encoder/Decoder
-- [ ] Coroutines
+- [x] Coroutines
 - [ ] Much More Soon

@@ -4,7 +4,11 @@
 #include <utf8.h>
 
 int
+#ifdef ENABLE_RT
+async_main()
+#else
 main()
+#endif
 {
         setlocale(LC_ALL, "");
         u8 *str = (u8*) "Hello! すし";

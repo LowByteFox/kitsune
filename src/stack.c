@@ -125,7 +125,7 @@ kitsune_stack_reserve(struct kitsune_stack *stack, usize new_capacity)
                 return;
 
         stack->items = stack->allocator->resize(stack->allocator, stack->items,
-                new_capacity * stack->chunksize);
+            new_capacity * stack->chunksize);
 }
 
 static void
@@ -136,5 +136,5 @@ kitsune_stack_shrink(struct kitsune_stack *stack)
                 return;
 
         stack->items = stack->allocator->resize(stack->allocator, stack->items,
-                stack->size * stack->chunksize);
+            stack->size * stack->chunksize);
 }

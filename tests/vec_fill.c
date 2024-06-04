@@ -5,7 +5,11 @@
 #include <assert.h>
 
 int
+#ifdef ENABLE_RT
+async_main()
+#else
 main()
+#endif
 {
         struct kitsune_allocator *const a = kitsune_basic_allocator;
         struct kitsune_vec vec = kitsune_vec_init(sizeof(int), a);

@@ -40,7 +40,11 @@ test(struct kitsune_allocator *a)
 }
 
 int
+#ifdef ENABLE_RT
+async_main()
+#else
 main()
+#endif
 {
         struct kitsune_allocator *const a = kitsune_hardened_allocator;
         kitsune_rc_deinit(test(a));
