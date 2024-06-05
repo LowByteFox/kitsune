@@ -1,14 +1,10 @@
 #include <locale.h>
 #include <stdio.h>
-#include <numbers.h>
-#include <utf8.h>
+#include <kitsune/numbers.h>
+#include <kitsune/utf8.h>
 
 int
-#ifdef ENABLE_RT
-async_main()
-#else
 main()
-#endif
 {
         setlocale(LC_ALL, "");
         u8 *str = (u8*) "Hello! すし";

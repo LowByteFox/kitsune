@@ -1,10 +1,10 @@
-#include "alloc/basic.h"
-#include "alloc/traced.h"
-#include <numbers.h>
-#include <generator.h>
-#include <iterator.h>
-#include <allocator.h>
-#include <alloc/hardened.h>
+#include <kitsune/alloc/basic.h>
+#include <kitsune/alloc/traced.h>
+#include <kitsune/numbers.h>
+#include <kitsune/generator.h>
+#include <kitsune/iterator.h>
+#include <kitsune/allocator.h>
+#include <kitsune/alloc/hardened.h>
 #include <stdio.h>
 #include <strings.h>
 #include <assert.h>

@@ -1,7 +1,7 @@
-#include <allocator.h>
-#include <alloc/hardened.h>
+#include <kitsune/allocator.h>
+#include <kitsune/alloc/hardened.h>
 #include <stdio.h>
-#include <rc.h>
+#include <kitsune/rc.h>
 #include <assert.h>
 
 void
@@ -40,11 +40,7 @@ test(struct kitsune_allocator *a)
 }
 
 int
-#ifdef ENABLE_RT
-async_main()
-#else
 main()
-#endif
 {
         struct kitsune_allocator *const a = kitsune_hardened_allocator;
         kitsune_rc_deinit(test(a));

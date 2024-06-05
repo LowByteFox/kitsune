@@ -1,15 +1,11 @@
-#include <allocator.h>
-#include <alloc/basic.h>
+#include <kitsune/allocator.h>
+#include <kitsune/alloc/basic.h>
 #include <strings.h>
-#include <vec.h>
+#include <kitsune/vec.h>
 #include <assert.h>
 
 int
-#ifdef ENABLE_RT
-async_main()
-#else
 main()
-#endif
 {
         struct kitsune_allocator *const a = kitsune_basic_allocator;
         struct kitsune_vec vec = kitsune_vec_init(sizeof(int), a);

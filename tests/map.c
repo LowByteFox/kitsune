@@ -1,22 +1,18 @@
-#include <dynamic_iterator.h>
-#include <iterator.h>
-#include <crashtrace.h>
-#include <allocator.h>
-#include <alloc/basic.h>
-#include <alloc/traced.h>
+#include <kitsune/dynamic_iterator.h>
+#include <kitsune/iterator.h>
+#include <kitsune/crashtrace.h>
+#include <kitsune/allocator.h>
+#include <kitsune/alloc/basic.h>
+#include <kitsune/alloc/traced.h>
 #include <stdio.h>
 #include <string.h>
 #include <strings.h>
-#include <map.h>
-#include <hashes.h>
+#include <kitsune/map.h>
+#include <kitsune/hashes.h>
 #include <assert.h>
 
 int
-#ifdef ENABLE_RT
-async_main()
-#else
 main()
-#endif
 {
         kitsune_install_crashtrace();
         struct kitsune_allocator *a = kitsune_basic_allocator;

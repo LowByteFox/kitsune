@@ -1,5 +1,5 @@
-#include <allocator.h>
-#include <alloc/hardened.h>
+#include <kitsune/allocator.h>
+#include <kitsune/alloc/hardened.h>
 #include <assert.h>
 
 int

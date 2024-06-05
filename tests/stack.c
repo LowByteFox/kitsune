@@ -1,15 +1,11 @@
-#include <allocator.h>
-#include <alloc/hardened.h>
+#include <kitsune/allocator.h>
+#include <kitsune/alloc/hardened.h>
 #include <stdio.h>
-#include <stack.h>
+#include <kitsune/stack.h>
 #include <assert.h>
 
 int
-#ifdef ENABLE_RT
-async_main()
-#else
 main()
-#endif
 {
         struct kitsune_allocator *const a = kitsune_hardened_allocator;
         struct kitsune_stack stack = kitsune_stack_init(sizeof(int), a);

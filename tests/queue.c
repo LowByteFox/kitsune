@@ -1,17 +1,13 @@
-#include "crashtrace.h"
-#include <numbers.h>
+#include <kitsune/crashtrace.h>
+#include <kitsune/numbers.h>
 #include <stdio.h>
-#include <queue.h>
-#include <allocator.h>
-#include <alloc/hardened.h>
+#include <kitsune/queue.h>
+#include <kitsune/allocator.h>
+#include <kitsune/alloc/hardened.h>
 #include <assert.h>
 
 int
-#ifdef ENABLE_RT
-async_main()
-#else
 main()
-#endif
 {
         kitsune_install_crashtrace();
         struct kitsune_allocator *a = kitsune_hardened_allocator;

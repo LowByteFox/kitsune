@@ -1,5 +1,5 @@
 CC = clang
-CFLAGS = -Wno-unused-command-line-argument -O0 -g -Wall -Wextra -Werror -std=c89 -march=native
+CFLAGS = -Wno-unused-command-line-argument -flto -O0 -g -Wall -Wextra -Werror -std=c89 -march=native
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), FreeBSD)
@@ -8,10 +8,6 @@ else ifeq ($(UNAME_S), OpenBSD)
 	CFLAGS += -lexecinfo
 else ifeq ($(UNAME_S), NetBSD)
 	CFLAGS += -lexecinfo
-endif
-
-ifdef ENABLE_RT
-	CFLAGS += -DENABLE_RT
 endif
 
 SRC_DIR = src
@@ -23,15 +19,15 @@ DESTDIR ?= /usr/local
 LIB_NAME = kitsune
 LIB_VERSION = 0.1.0
 
-SRCS = $(shell find $(SRC_DIR) -type f -name '*.c')
-OBJS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
+SRCS = $(shell find $(SRC_DIR)/kitsune -type f -name '*.c')
+OBJS = $(patsubst $(SRC_DIR)/kitsune/%.c,$(OBJ_DIR)/kitsune/%.o,$(SRCS))
 LIB = $(LIB_DIR)/lib$(LIB_NAME).a
 
 TEST_SOURCES = $(wildcard tests/*.c)
 TEST_TARGETS := $(patsubst tests/%.c,%,$(TEST_SOURCES))
 TEST_BIN_DIR := bin/tests
 
-all: $(LIB)
+all: $(LIB) 
 
 test: $(addprefix $(TEST_BIN_DIR)/,$(TEST_TARGETS))
 
@@ -59,6 +55,6 @@ install: all
 	install -d $(DESTDIR)/lib
 	cp lib/libkitsune.a $(DESTDIR)/lib/
 	install -m 755 -d $(DESTDIR)/include/kitsune
-	cp -r include/* $(DESTDIR)/include/kitsune/
+	cp -r include/* $(DESTDIR)/include/
 
 .PHONY: all test clean

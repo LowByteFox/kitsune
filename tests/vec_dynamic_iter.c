@@ -1,10 +1,10 @@
-#include <iterator.h>
-#include <dynamic_iterator.h>
-#include <allocator.h>
-#include <alloc/hardened.h>
+#include <kitsune/iterator.h>
+#include <kitsune/dynamic_iterator.h>
+#include <kitsune/allocator.h>
+#include <kitsune/alloc/hardened.h>
 #include <stdio.h>
 #include <strings.h>
-#include <vec.h>
+#include <kitsune/vec.h>
 #include <assert.h>
 
 void
@@ -18,11 +18,7 @@ iterate(struct kitsune_dynamic_iterator *iter)
 }
 
 int
-#ifdef ENABLE_RT
-async_main()
-#else
 main()
-#endif
 {
         struct kitsune_allocator *const a = kitsune_hardened_allocator;
         struct kitsune_vec vec = kitsune_vec_init(sizeof(int), a);

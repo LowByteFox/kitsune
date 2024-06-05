@@ -1,13 +1,9 @@
-#include <allocator.h>
-#include <alloc/basic.h>
+#include <kitsune/allocator.h>
+#include <kitsune/alloc/basic.h>
 #include <assert.h>
 
 int
-#ifdef ENABLE_RT
-async_main()
-#else
 main()
-#endif
 {
         struct kitsune_allocator *const a = kitsune_basic_allocator;
         int *arr = a->alloc(a, sizeof(int) * 2);

@@ -1,8 +1,8 @@
-#include <numbers.h>
-#include <coroutines.h>
+#include <kitsune/numbers.h>
+#include <kitsune/coroutines.h>
 
-#include <allocator.h>
-#include <alloc/basic.h>
+#include <kitsune/allocator.h>
+#include <kitsune/alloc/basic.h>
 #include <stdio.h>
 
 

@@ -1,13 +1,9 @@
-#include <alloc/hardened.h>
-#include <allocator.h>
-#include <alloc/traced.h>
+#include <kitsune/alloc/hardened.h>
+#include <kitsune/allocator.h>
+#include <kitsune/alloc/traced.h>
 
 int
-#ifdef ENABLE_RT
-async_main()
-#else
 main()
-#endif
 {
         struct kitsune_allocator *a = kitsune_hardened_allocator;
         struct kitsune_traced_allocator gpa = kitsune_traced_allocator_init(a);
