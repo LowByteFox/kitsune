@@ -49,7 +49,7 @@ $(LIB_DIR):
 	mkdir -p $(LIB_DIR)
 
 clean:
-	rm -rf $(OBJ_DIR) $(LIB_DIR) $(TEST_BIN_DIR)
+	rm -rf $(OBJ_DIR) $(LIB_DIR) $(TEST_BIN_DIR) *.core
 
 install: all
 	install -d $(DESTDIR)/lib
