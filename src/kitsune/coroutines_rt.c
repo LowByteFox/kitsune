@@ -2,6 +2,7 @@
 #include <kitsune/alloc/basic.h>
 #include <kitsune/coroutines.h>
 #include <kitsune/numbers.h>
+#include <kitsune/crashtrace.h>
 
 i32 async_main(i32 argc, char **argv);
 
@@ -23,6 +24,7 @@ async_main_hook(void *arg)
 i32 __attribute__((weak))
 main(i32 argc, char **argv)
 {
+        kitsune_install_crashtrace();
         struct kitsune_allocator *a = kitsune_basic_allocator;
         struct kitsune_runtime *rt = kitsune_runtime_init(16 * 1024, a);
         kitsune_set_global_runtime(rt);
