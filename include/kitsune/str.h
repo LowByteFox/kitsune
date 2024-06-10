@@ -8,8 +8,6 @@
 
 enum kitsune_str_type {
         STR,
-        STRING,
-        STRING_VIEW
 };
 
 struct kitsune_str {

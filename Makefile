@@ -49,12 +49,12 @@ $(LIB_DIR):
 	mkdir -p $(LIB_DIR)
 
 clean:
-	rm -rf $(OBJ_DIR) $(LIB_DIR) $(TEST_BIN_DIR) *.core
+	rm -rf $(OBJ_DIR) $(LIB_DIR) $(TEST_BIN_DIR) *.core _install
 
 install: all
 	install -d $(DESTDIR)/lib
 	cp lib/libkitsune.a $(DESTDIR)/lib/
 	install -m 755 -d $(DESTDIR)/include/kitsune
-	cp -r include/* $(DESTDIR)/include/
+	cp -r include/kitsune $(DESTDIR)/include/
 
 .PHONY: all test clean
