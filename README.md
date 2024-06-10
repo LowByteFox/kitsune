@@ -26,7 +26,7 @@
 - [x] Traced Allocator
 - [x] UTF-8 API (will add some more later)
 - [x] String Utilities
-- [ ] C String
+- [ ] C Strings
 - [ ] UTF-8 Compatible Strings
 - [ ] String Buffer
 - [ ] Arena Allocator

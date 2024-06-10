@@ -1,6 +1,7 @@
 #ifndef _STR_H_
 #define _STR_H_
 
+#include <kitsune/allocator.h>
 #include <kitsune/iterator.h>
 #include <kitsune/dynamic_iterator.h>
 #include <kitsune/utf8.h>
@@ -12,10 +13,12 @@ enum kitsune_str_type {
 
 struct kitsune_str {
         enum kitsune_str_type type;
+	struct kitsune_allocator *allocator;
         char *str;
+	usize len;
 };
 
-struct kitsune_str  kitsune_str_init(char*);
+struct kitsune_str  kitsune_str_init(const char*, struct kitsune_allocator*);
 void                kitsune_str_deinit(struct kitsune_str*);
 char               *kitsune_str_as_ascii(struct kitsune_str*);
 u8                 *kitsune_str_as_bytes(struct kitsune_str*);
@@ -26,7 +29,6 @@ bool                kitsune_str_starts_with(struct kitsune_str*,
 bool                kitsune_str_ends_with(struct kitsune_str*,
                         struct kitsune_str*);
 usize               kitsune_str_find(struct kitsune_str*, struct kitsune_str*);
-usize               kitsune_str_rfind(struct kitsune_str*, struct kitsune_str*);
 kitsune_rune        kitsune_str_get(struct kitsune_str*, usize);
 bool                kitsune_str_is_ascii(struct kitsune_str*);
 usize               kitsune_str_length(struct kitsune_str*);
@@ -35,8 +37,6 @@ void                kitsune_str_lower(struct kitsune_str*);
 struct kitsune_str  kitsune_str_repeat(struct kitsune_str*, usize);
 void                kitsune_str_replace(struct kitsune_str*,
                         struct kitsune_str*, struct kitsune_str*);
-void                kitsune_str_replacen(struct kitsune_str*,
-                        struct kitsune_str*, struct kitsune_str*, usize);
 void                kitsune_str_strip_prefix(struct kitsune_str*,
                         struct kitsune_str*);
 void                kitsune_str_strip_suffix(struct kitsune_str*,
