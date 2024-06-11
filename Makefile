@@ -58,7 +58,7 @@ clean:
 
 install: all
 	install -d $(DESTDIR)/lib
-	cp lib/libkitsune.a $(DESTDIR)/lib/
+	cp -r lib/ $(DESTDIR)/lib/
 	install -m 755 -d $(DESTDIR)/include/kitsune
 	cp -r include/kitsune $(DESTDIR)/include/
 
