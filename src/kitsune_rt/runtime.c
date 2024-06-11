@@ -21,7 +21,7 @@ async_main_hook(void *arg)
         return NULL;
 }
 
-i32 __attribute__((weak))
+i32
 main(i32 argc, char **argv)
 {
         kitsune_install_crashtrace();
