@@ -56,7 +56,7 @@ struct kitsune_dynamic_iterator kitsune_str_rsplitn(struct kitsune_str*,
                                     struct kitsune_str*, usize);
 struct kitsune_iterator         kitsune_str_chars(struct kitsune_str*);
 
-struct kitsune_dynamic_iterator kitsune_str_dynamic_chars(struct kitsune_str*);
+struct kitsune_dynamic_iterator kitsune_str_chars_dynamic(struct kitsune_str*);
 struct kitsune_dynamic_iterator kitsune_str_lines(struct kitsune_str*);
 
 #endif

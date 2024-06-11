@@ -10,6 +10,12 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 
+#if defined(__FreeBSD__)
+#define TRACE_BIN "llvm-symbolizer"
+#elif defined(__linux__)
+#define TRACE_BIN "addr2line"
+#endif
+
 void
 kitsune_print_backtrace(usize size, void **arr, bool skip)
 {
@@ -46,9 +52,9 @@ kitsune_print_backtrace(usize size, void **arr, bool skip)
                     STDERR_FILENO);
                 posix_spawn_file_actions_addclose(&actions, pipefd[0]);
 
-                char *argv[] = {"addr2line", "-e", file, addr, "-f", NULL};
+                char *argv[] = {TRACE_BIN, "-e", file, addr, "-f", NULL};
 
-                if (posix_spawnp(&pid, "addr2line", &actions, NULL, argv, NULL)
+                if (posix_spawnp(&pid, TRACE_BIN, &actions, NULL, argv, NULL)
                     != 0) {
                         perror("posix_spawn");
                         exit(EXIT_FAILURE);
@@ -67,6 +73,7 @@ kitsune_print_backtrace(usize size, void **arr, bool skip)
 
                 char *path = strstr(buffer, "\n") + 1;
                 char *fn = strtok(buffer, "\n");
+
                 if (strncmp(buffer, "??", 2) == 0)
                         continue;
 

@@ -366,7 +366,7 @@ kitsune_strstr(const char *s1, const char *s2, usize maxlen)
 	assert(maxlen > 0);
 
 	char *res = strstr(s1, s2);
-	if (res != NULL && res - s1 < maxlen) {
+	if (res != NULL && (usize) (res - s1) < maxlen) {
 		return res;
 	}
 
@@ -381,7 +381,7 @@ kitsune_strcasestr(const char *s, const char *find, usize maxlen)
 	assert(maxlen > 0);
 
 	char *res = strcasestr(s, find);
-	if (res != NULL && res - s < maxlen) {
+	if (res != NULL && (usize) (res - s) < maxlen) {
 		return res;
 	}
 
@@ -401,7 +401,7 @@ kitsune_strcasestr_l(const char *s, const char *find, usize maxlen,
 #elif defined(__FreeBSD__)
 	res = strcasestr_l(s, find, locale);
 #endif
-	if (res != NULL && res - s < maxlen) {
+	if (res != NULL && (usize) (res - s) < maxlen) {
 		return res;
 	}
 
