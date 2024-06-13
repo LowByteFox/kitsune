@@ -49,6 +49,8 @@ main()
                 printf("%s\t=> %d\n", (char*) item->key, *(int*) item->value);
 
         kitsune_dynamic_iterator_deinit(&iter);
+        kitsune_map_deinit(&map, NULL);
+        assert(kitsune_map_empty(&map) == true);
         kitsune_traced_allocator_deinit(&gpa);
 
         printf("done!\n");
