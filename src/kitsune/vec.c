@@ -191,7 +191,19 @@ kitsune_vec_empty(struct kitsune_vec *vec)
 }
 
 void*
-kitsune_vec_at(struct kitsune_vec *vec, usize index)
+kitsune_vec_front(struct kitsune_vec *vec)
+{
+        return vec->items;
+}
+
+void*
+kitsune_vec_back(struct kitsune_vec *vec)
+{
+        return kitsune_vec_rbegin(vec);
+}
+
+void*
+kitsune_vec_get(struct kitsune_vec *vec, usize index)
 {
         if (vec->size <= index) return NULL;
 
@@ -283,7 +295,7 @@ static void*
 kitsune_vec_dynamic_iterator_next(struct kitsune_dynamic_iterator *iter)
 { 
         struct vec_iter_ctx *ctx = iter->context;
-        void *item = kitsune_vec_at(ctx->vec, ctx->pos);
+        void *item = kitsune_vec_get(ctx->vec, ctx->pos);
 
         if (iter->base.direction == ADDITION)
                 ctx->pos++;
@@ -304,7 +316,7 @@ static void*
 kitsune_vec_dynamic_iterator_previous(struct kitsune_dynamic_iterator *iter)
 {
         struct vec_iter_ctx *ctx = iter->context;
-        void *item = kitsune_vec_at(ctx->vec, ctx->pos);
+        void *item = kitsune_vec_get(ctx->vec, ctx->pos);
 
         if (iter->base.direction == ADDITION) {
                 if (ctx->pos == 0)

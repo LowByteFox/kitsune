@@ -323,7 +323,7 @@ start:
         if (ctx->current == NULL)
                 return NULL;
 
-        struct kitsune_map_entry *item = kitsune_vec_at(ctx->current,
+        struct kitsune_map_entry *item = kitsune_vec_get(ctx->current,
             ctx->array_pos);
 
         ctx->array_pos += iter->base.direction == ADDITION ? 1 : -1;

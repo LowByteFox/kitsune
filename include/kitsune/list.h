@@ -36,7 +36,7 @@ void               *kitsune_list_front(struct kitsune_list*);
 void               *kitsune_list_pop_back(struct kitsune_list*);
 void               *kitsune_list_pop_front(struct kitsune_list*);
 void               *kitsune_list_remove(struct kitsune_list*, usize);
-void               *kitsune_list_at(struct kitsune_list*, usize);
+void               *kitsune_list_get(struct kitsune_list*, usize);
 bool                kitsune_list_contains(struct kitsune_list*, void*);
 usize               kitsune_list_size(struct kitsune_list*);
 void                kitsune_list_resize(struct kitsune_list*, usize, void*,

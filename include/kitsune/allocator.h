@@ -24,7 +24,6 @@ void   *kitsune_allocator_resize(struct kitsune_allocator *const, void*,
 void    kitsune_allocator_free(struct kitsune_allocator *const, void*);
 usize   kitsune_allocated(const void*);
 
-
 struct kitsune_pointer *kitsune_visualize(void*);
 
 #endif

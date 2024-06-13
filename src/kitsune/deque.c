@@ -74,9 +74,9 @@ kitsune_deque_back(struct kitsune_deque *deque)
                 return NULL;
 
         if (deque->back.size > 0)
-                return kitsune_vec_at(&deque->back, deque->back.size - 1);
+                return kitsune_vec_get(&deque->back, deque->back.size - 1);
         else if (deque->front.size > 0)
-                return kitsune_vec_at(&deque->front, 0);
+                return kitsune_vec_get(&deque->front, 0);
 
         return NULL;
 }
@@ -88,9 +88,9 @@ kitsune_deque_front(struct kitsune_deque *deque)
                 return NULL;
 
         if (deque->front.size > 0)
-                return kitsune_vec_at(&deque->front, deque->front.size - 1);
+                return kitsune_vec_get(&deque->front, deque->front.size - 1);
         else if (deque->back.size > 0)
-                return kitsune_vec_at(&deque->back, 0);
+                return kitsune_vec_get(&deque->back, 0);
 
         return NULL;
 }
@@ -151,9 +151,9 @@ kitsune_deque_get(struct kitsune_deque *deque, usize index)
 {
         if (index < deque->front.size) {
                 index = deque->front.size - 1 - index;
-                return kitsune_vec_at(&deque->front, index);
+                return kitsune_vec_get(&deque->front, index);
         } else
-                return kitsune_vec_at(&deque->back, index - deque->front.size);
+                return kitsune_vec_get(&deque->back, index - deque->front.size);
 }
 
 usize

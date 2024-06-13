@@ -38,7 +38,7 @@ kitsune_iterator_next(struct kitsune_iterator *iter)
                         return i->next(i);
 
                 if (i->pos < i->result_cache.size) {
-                        void *current = kitsune_vec_at(&i->result_cache,
+                        void *current = kitsune_vec_get(&i->result_cache,
                                             i->pos);
                         i->pos++;
                         return current;
@@ -82,7 +82,7 @@ kitsune_iterator_previous(struct kitsune_iterator *iter)
                         return NULL;
 
                 i->pos--;
-                return kitsune_vec_at(&i->result_cache, i->pos);
+                return kitsune_vec_get(&i->result_cache, i->pos);
         }
         case DYNAMIC: {
                 struct kitsune_dynamic_iterator *i = (void*) iter;

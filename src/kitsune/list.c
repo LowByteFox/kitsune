@@ -186,7 +186,7 @@ kitsune_list_remove(struct kitsune_list *list, usize index)
 }
 
 void*
-kitsune_list_at(struct kitsune_list *list, usize index)
+kitsune_list_get(struct kitsune_list *list, usize index)
 {
         if (list->size <= index) return NULL;
         usize i = 0;
