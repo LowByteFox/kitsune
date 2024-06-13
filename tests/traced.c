@@ -15,6 +15,9 @@ main()
         hehe[0] = 4;
         hehe[1] = 3;
 
+        /* Trigger system allocator to move */
+        hehe = allocator->resize(allocator, hehe, sizeof(int) * 100000); 
+
         /*
          * Lets leave this out :P
          * allocator->free(allocator, hehe);

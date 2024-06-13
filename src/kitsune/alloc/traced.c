@@ -97,13 +97,13 @@ kitsune_traced_allocator_deinit(struct kitsune_traced_allocator *traced)
         if (entry != NULL)
                 leaked = true;
 
-        while (entry != NULL) {
+        for (; entry != NULL; entry = kitsune_iterator_next(&iter.base)) {
                 struct pointer_trace *trace = entry->value;
+                if (trace->size == 0) continue;
                 fprintf(stderr, 
                     "Memory leaked at address %p!\n━━━━━━━━━━━━━━━\n"
                     , *(void**) entry->key);
                 kitsune_print_backtrace(trace->size, trace->stack, true);
-                entry = kitsune_iterator_next(&iter.base);
                 fprintf(stderr, "━━━━━━━━━━━━━━━\n");
         }
 

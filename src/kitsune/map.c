@@ -117,6 +117,7 @@ kitsune_map_remove(struct kitsune_map *map, void *key, usize keylen)
                 if (entry->keylen == keylen &&
                         kitsune_memcmp2(entry->key, key, keylen) == 0) {
                         data = entry->value;
+                        entry->keylen = 0;
                         map->allocator->free(map->allocator, entry->key);
                         void *rmed = kitsune_vec_remove(current, i);
                         map->allocator->free(map->allocator, rmed);
