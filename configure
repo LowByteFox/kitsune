@@ -219,7 +219,7 @@ MKFILE="$MKFILE
 clean:
 \trm -rf _obj lib bin *.core _install"
 
-echo "$MKFILE" > Makefile
+/bin/echo -e "$MKFILE" > Makefile
 
 # Configure the config.h
 
