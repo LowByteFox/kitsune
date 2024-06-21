@@ -58,3 +58,5 @@ dkms.conf
 bin/
 lib/
 _install
+Makefile
+include/kitsune/config.h

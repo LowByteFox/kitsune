@@ -1,65 +1,105 @@
-CC = clang
-CFLAGS = -Wno-unused-command-line-argument -O0 -g -Wall -Wextra -Werror -std=c89 -march=native
-
-UNAME_S := $(shell uname -s)
-ifeq ($(UNAME_S), FreeBSD)
-	CFLAGS += -lexecinfo
-else ifeq ($(UNAME_S), OpenBSD)
-	CFLAGS += -lexecinfo
-else ifeq ($(UNAME_S), NetBSD)
-	CFLAGS += -lexecinfo
-endif
-
-SRC_DIR = src
-INC_DIR = include
-LIB_DIR = lib
-OBJ_DIR = obj
+CC = tcc
+AR = tcc -ar
+CFLAGS = -Wall -Wextra -std=c89 -Iinclude
+LDFLAGS = 
+INCLDIR = include
+SRCDIR = src
+OBJDIR = obj
 DESTDIR ?= /usr/local
 
-LIB_NAME = kitsune
-LIB_VERSION = 0.1.0
+SRCS = src/kitsune/dynamic_iterator.c src/kitsune/crashtrace.c src/kitsune/strutils.c src/kitsune/hashes.c src/kitsune/coroutines.c src/kitsune/list.c src/kitsune/stack.c src/kitsune/allocator.c src/kitsune/alloc/basic.c src/kitsune/alloc/traced.c src/kitsune/alloc/hardened.c src/kitsune/queue.c src/kitsune/rc.c src/kitsune/generator.c src/kitsune/memutils.c src/kitsune/deque.c src/kitsune/str.c src/kitsune/utf8.c src/kitsune/map.c src/kitsune/vec.c src/kitsune/iterator.c 
+OBJS = _obj/kitsune/dynamic_iterator.o _obj/kitsune/crashtrace.o _obj/kitsune/strutils.o _obj/kitsune/hashes.o _obj/kitsune/coroutines.o _obj/kitsune/list.o _obj/kitsune/stack.o _obj/kitsune/allocator.o _obj/kitsune/alloc/basic.o _obj/kitsune/alloc/traced.o _obj/kitsune/alloc/hardened.o _obj/kitsune/queue.o _obj/kitsune/rc.o _obj/kitsune/generator.o _obj/kitsune/memutils.o _obj/kitsune/deque.o _obj/kitsune/str.o _obj/kitsune/utf8.o _obj/kitsune/map.o _obj/kitsune/vec.o _obj/kitsune/iterator.o
+LIB = lib/libkitsune.a
 
-SRCS = $(shell find $(SRC_DIR)/kitsune -type f -name '*.c')
-OBJS = $(patsubst $(SRC_DIR)/kitsune/%.c,$(OBJ_DIR)/kitsune/%.o,$(SRCS))
-LIB = $(LIB_DIR)/lib$(LIB_NAME).a
-LIBRT = $(LIB_DIR)/lib$(LIB_NAME)_rt.a
+all: $(LIB)
 
-TEST_SOURCES = $(wildcard tests/*.c)
-TEST_TARGETS := $(patsubst tests/%.c,%,$(TEST_SOURCES))
-TEST_BIN_DIR := bin/tests
+$(LIB): $(OBJS)
+	@mkdir -p lib
+	$(AR) rcs $(LIB) $(OBJS)
 
-all: $(LIB) $(LIBRT)
+_obj/kitsune/dynamic_iterator.o: src/kitsune/dynamic_iterator.c
+	@mkdir -p _obj/kitsune
+	$(CC) $(CFLAGS) -c src/kitsune/dynamic_iterator.c -o _obj/kitsune/dynamic_iterator.o
 
-test: $(addprefix $(TEST_BIN_DIR)/,$(TEST_TARGETS))
+_obj/kitsune/crashtrace.o: src/kitsune/crashtrace.c
+	@mkdir -p _obj/kitsune
+	$(CC) $(CFLAGS) -c src/kitsune/crashtrace.c -o _obj/kitsune/crashtrace.o
 
-$(LIB): $(OBJS) | $(LIB_DIR)
-	ar rcs $@ $^
+_obj/kitsune/strutils.o: src/kitsune/strutils.c
+	@mkdir -p _obj/kitsune
+	$(CC) $(CFLAGS) -c src/kitsune/strutils.c -o _obj/kitsune/strutils.o
 
-$(LIBRT): $(OBJ_DIR)/kitsune_rt/runtime.o
-	ar rcs $@ $^
+_obj/kitsune/hashes.o: src/kitsune/hashes.c
+	@mkdir -p _obj/kitsune
+	$(CC) $(CFLAGS) -c src/kitsune/hashes.c -o _obj/kitsune/hashes.o
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
+_obj/kitsune/coroutines.o: src/kitsune/coroutines.c
+	@mkdir -p _obj/kitsune
+	$(CC) $(CFLAGS) -c src/kitsune/coroutines.c -o _obj/kitsune/coroutines.o
 
-$(TEST_BIN_DIR)/%: tests/%.c
-	@mkdir -p $(TEST_BIN_DIR)
-	if [ "$$(basename $@)" = "coro" ]; then \
-		$(CC) $(CFLAGS) -Wl,-export-dynamic -I$(INC_DIR) -Llib -lkitsune -lkitsune_rt $< -o $@; \
-	else\
-		$(CC) $(CFLAGS) -Wl,-export-dynamic -I$(INC_DIR) -Llib -lkitsune $< -o $@; \
-	fi;
+_obj/kitsune/list.o: src/kitsune/list.c
+	@mkdir -p _obj/kitsune
+	$(CC) $(CFLAGS) -c src/kitsune/list.c -o _obj/kitsune/list.o
 
-$(LIB_DIR):
-	mkdir -p $(LIB_DIR)
+_obj/kitsune/stack.o: src/kitsune/stack.c
+	@mkdir -p _obj/kitsune
+	$(CC) $(CFLAGS) -c src/kitsune/stack.c -o _obj/kitsune/stack.o
+
+_obj/kitsune/allocator.o: src/kitsune/allocator.c
+	@mkdir -p _obj/kitsune
+	$(CC) $(CFLAGS) -c src/kitsune/allocator.c -o _obj/kitsune/allocator.o
+
+_obj/kitsune/alloc/basic.o: src/kitsune/alloc/basic.c
+	@mkdir -p _obj/kitsune/alloc
+	$(CC) $(CFLAGS) -c src/kitsune/alloc/basic.c -o _obj/kitsune/alloc/basic.o
+
+_obj/kitsune/alloc/traced.o: src/kitsune/alloc/traced.c
+	@mkdir -p _obj/kitsune/alloc
+	$(CC) $(CFLAGS) -c src/kitsune/alloc/traced.c -o _obj/kitsune/alloc/traced.o
+
+_obj/kitsune/alloc/hardened.o: src/kitsune/alloc/hardened.c
+	@mkdir -p _obj/kitsune/alloc
+	$(CC) $(CFLAGS) -c src/kitsune/alloc/hardened.c -o _obj/kitsune/alloc/hardened.o
+
+_obj/kitsune/queue.o: src/kitsune/queue.c
+	@mkdir -p _obj/kitsune
+	$(CC) $(CFLAGS) -c src/kitsune/queue.c -o _obj/kitsune/queue.o
+
+_obj/kitsune/rc.o: src/kitsune/rc.c
+	@mkdir -p _obj/kitsune
+	$(CC) $(CFLAGS) -c src/kitsune/rc.c -o _obj/kitsune/rc.o
+
+_obj/kitsune/generator.o: src/kitsune/generator.c
+	@mkdir -p _obj/kitsune
+	$(CC) $(CFLAGS) -c src/kitsune/generator.c -o _obj/kitsune/generator.o
+
+_obj/kitsune/memutils.o: src/kitsune/memutils.c
+	@mkdir -p _obj/kitsune
+	$(CC) $(CFLAGS) -c src/kitsune/memutils.c -o _obj/kitsune/memutils.o
+
+_obj/kitsune/deque.o: src/kitsune/deque.c
+	@mkdir -p _obj/kitsune
+	$(CC) $(CFLAGS) -c src/kitsune/deque.c -o _obj/kitsune/deque.o
+
+_obj/kitsune/str.o: src/kitsune/str.c
+	@mkdir -p _obj/kitsune
+	$(CC) $(CFLAGS) -c src/kitsune/str.c -o _obj/kitsune/str.o
+
+_obj/kitsune/utf8.o: src/kitsune/utf8.c
+	@mkdir -p _obj/kitsune
+	$(CC) $(CFLAGS) -c src/kitsune/utf8.c -o _obj/kitsune/utf8.o
+
+_obj/kitsune/map.o: src/kitsune/map.c
+	@mkdir -p _obj/kitsune
+	$(CC) $(CFLAGS) -c src/kitsune/map.c -o _obj/kitsune/map.o
+
+_obj/kitsune/vec.o: src/kitsune/vec.c
+	@mkdir -p _obj/kitsune
+	$(CC) $(CFLAGS) -c src/kitsune/vec.c -o _obj/kitsune/vec.o
+
+_obj/kitsune/iterator.o: src/kitsune/iterator.c
+	@mkdir -p _obj/kitsune
+	$(CC) $(CFLAGS) -c src/kitsune/iterator.c -o _obj/kitsune/iterator.o
 
 clean:
-	rm -rf $(OBJ_DIR) $(LIB_DIR) $(TEST_BIN_DIR) *.core _install
-
-install: all
-	install -d $(DESTDIR)/lib
-	cp -r lib/ $(DESTDIR)/lib/
-	install -m 755 -d $(DESTDIR)/include/kitsune
-	cp -r include/kitsune $(DESTDIR)/include/
-
-.PHONY: all test clean
+	rm -rf _obj lib bin *.core _install

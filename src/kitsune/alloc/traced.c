@@ -1,3 +1,19 @@
+// kitsune - useful C standard library
+// Copyright (C) 2024  LowByteFox
+// 
+// kitsune is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// kitsune is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this library.  If not, see <https://www.gnu.org/licenses/>.
+
 #include <kitsune/crashtrace.h>
 #include <kitsune/hashes.h>
 #include <kitsune/iterator.h>
@@ -6,10 +22,14 @@
 #include <kitsune/map.h>
 #include <kitsune/allocator.h>
 #include <kitsune/numbers.h>
-#include <execinfo.h>
+#include <kitsune/config.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+#ifdef KITSUNE_TARGET_BSD
+#include <execinfo.h>
+#endif
 
 #define STACK_SIZE 16
 
@@ -30,10 +50,12 @@ allocate(struct kitsune_allocator *a, usize size)
 
         void *allocated = ctx->base->alloc(ctx->base, size);
         struct pointer_trace trace = {0};
+#ifdef FEATURE_CRASHTRACE
         trace.size = backtrace(trace.stack, STACK_SIZE);
 
         kitsune_map_insert(&ctx->pointers, &allocated, sizeof(void**),
             &trace);
+#endif
 
         return allocated;
 }

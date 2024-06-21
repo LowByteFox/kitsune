@@ -1,24 +1,40 @@
+// kitsune - useful C standard library
+// Copyright (C) 2024  LowByteFox
+// 
+// kitsune is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// kitsune is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this library.  If not, see <https://www.gnu.org/licenses/>.
+
 #include <kitsune/numbers.h>
-#include <execinfo.h>
 #include <kitsune/crashtrace.h>
+#include <kitsune/config.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/signal.h>
+#include <signal.h>
 #include <unistd.h>
 #include <spawn.h>
 #include <sys/wait.h>
 #include <fcntl.h>
 
-#if defined(__FreeBSD__)
+#ifdef KITSUNE_TARGET_BSD
+#include <execinfo.h>
 #define TRACE_BIN "llvm-symbolizer"
-#elif defined(__linux__)
-#define TRACE_BIN "addr2line"
 #endif
 
 void
 kitsune_print_backtrace(usize size, void **arr, bool skip)
 {
+#ifdef FEATURE_CRASHTRACE
         char **strs = backtrace_symbols_fmt(arr, size, "%a %f");
         usize i;
 
@@ -84,11 +100,13 @@ kitsune_print_backtrace(usize size, void **arr, bool skip)
         }
 
         free(strs);
+#endif
 }
 
 static void
 handler(int sig)
 {
+#ifdef FEATURE_CRASHTRACE
         void *array[16];
         usize size;
 
@@ -96,12 +114,11 @@ handler(int sig)
 
         fprintf(stderr, "\n!!! Crashtrace recieved a signal: %s\n",
             strsignal(sig));
-#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
+#if KITSUNE_TARGET_BSD
         kitsune_print_backtrace(size, array, true);
-#elif defined(__linux__)
-        backtrace_symbols_fd(array, 16, STDERR_FILENO);
 #else
 #error "Unknown platform, does it have backtrace? If yes, check and make PR"
+#endif
 #endif
         exit(1);
 }

@@ -1,0 +1,235 @@
+#!/bin/sh
+
+HELP="Usage: $0 [options]
+Options: [defaults in brackets after descriptions]
+
+Standard options:
+  --help                    print this message
+  --prefix PREFIX           install in PREFIX [/usr/local]
+
+Advanced options (experts only):
+  --cc CC                   use C compiler CC [cc]
+  --ar AR                   create archives using AR [ar]
+  --cflags FLAGS            specify compiler flags [-Wall -Wextra -std=c89]
+  --strip-binaries          strip symbol tables from resulting binaries
+  --enable-static           enable generation of static libraries
+  --enable-debug            enable debug symbols
+
+Project options:
+  --disable-runtime         disable runtime library
+  --disable-crashtrace      disable crashtrace support
+  --disable-coroutines      disable coroutines support
+
+Some features will be disabled by default on some targets
+they will be enabled once ideal patch is found"
+
+PREFIX="/usr/local"
+CC=""
+AR=""
+CFLAGS="-Wall -Wextra -std=c89"
+STRIP_BINARIES=0
+DEBUG=0
+STATIC=0
+CRASHTRACE=1
+COROUTINES=1
+
+while [ $# -gt 0 ]; do
+	case "$1" in
+		--help)
+            echo "$HELP"
+			exit 0
+			;;
+		--prefix)
+			PREFIX="$2"
+			shift
+			shift
+			;;
+		--cc)
+			CC="$2"
+			shift
+			shift
+			;;
+		--cflags)
+            CFLAGS=""
+			for i in $2; do
+				CFLAGS="$CFLAGS $i"
+			done
+			shift
+			shift
+			;;
+		--ar)
+			AR="$2"
+			shift
+			shift
+			;;
+		--strip-binaries)
+			STRIP_BINARIES=1
+			shift
+			;;
+		--enable-static)
+			STATIC=1
+			shift
+			;;
+		--enable-debug)
+			DEBUG=1
+			shift
+			;;
+        --disable-coroutines)
+            COROUTINES=0
+            shift
+            ;;
+        --disable-crashtrace)
+            CRASHTRACE=0
+            shift
+            ;;
+		*)
+            echo "Invalid option \"$1\""
+            echo "$HELP_MSG"
+            exit 1
+			;;
+	esac
+done
+
+OS=$(uname -s)
+
+if [ "$OS" = "Linux" ]; then
+    LIBC=$(ldd --version 2>&1 | cut -d" " -f1 | head -n 1)
+
+    if [ "$LIBC" = "ldd" ]; then
+        echo "GNU Libc is not yet supported by kitsune!" >&2
+        exit 1
+    fi
+else
+    case "$OS" in
+        *BSD)
+            OS="BSD"
+            ;;
+        *)
+            echo "Unknown OS => $OS" >&2
+            exit 1
+            ;;
+    esac
+fi
+
+if [ -n "$CC" ]; then
+    if ! command -v $CC > /dev/null; then
+        echo "Unable to find a C compiler $CC! Trying to guess" >&2
+        CC=""
+    fi
+fi
+
+if [ -n "$AR" ]; then
+    if ! command -v $AR > /dev/null; then
+        echo "Unable to find an archiver $AR! Trying to guess" >&2
+        AR=""
+    fi
+fi
+
+if [ -z "$CC" ]; then
+    if command -v tcc > /dev/null; then
+        CC="tcc"
+        AR="tcc -ar"
+    elif command -v gcc > /dev/null; then
+        CC="gcc"
+    elif command -v clang > /dev/null; then
+        CC="clang"
+    else
+        echo "Unable to find C compiler, specify?" >&2
+        exit 1
+    fi
+fi
+
+if [ -z "$AR" ]; then
+    if command -v ar > /dev/null; then
+        AR="ar"
+    elif command -v tcc > /dev/null; then
+        AR="tcc -ar"
+    else
+        echo "Unable to find archiver, specify?" >&2
+        exit 1
+    fi
+fi
+
+SRCS=$(find src/kitsune -type f -name "*.c" | tr "\n" " ")
+OBJS=""
+
+# _obj because bsdmake likes to go into obj automatically
+
+for i in $SRCS; do
+    if [ -n "$OBJS" ]; then
+        OBJS="$OBJS $(echo "${i%.c}.o" | sed 's/^src/_obj/')"
+    else
+        OBJS=$(echo "${i%.c}.o" | sed 's/^src/_obj/')
+    fi
+done
+
+MKFILE="CC = $CC
+AR = $AR
+CFLAGS = $CFLAGS -Iinclude
+LDFLAGS = 
+INCLDIR = include
+SRCDIR = src
+OBJDIR = obj
+DESTDIR ?= $PREFIX
+
+"
+
+if [ "$OS" = "BSD" ]; then
+    MKFILE="${MKFILE}LDFLAGS += -lexecinfo
+
+"
+fi
+
+MKFILE="${MKFILE}SRCS = $SRCS
+OBJS = $OBJS
+LIB = lib/libkitsune.a
+
+all: \$(LIB)
+
+\$(LIB): \$(OBJS)
+\t@mkdir -p lib
+\t\$(AR) rcs \$(LIB) \$(OBJS)
+"
+
+for i in $SRCS; do
+    obj=$(echo "${i%.c}.o" | sed 's/^src/_obj/')
+    MKFILE="${MKFILE}
+$obj: $i
+\t@mkdir -p $(dirname "$obj")
+\t\$(CC) \$(CFLAGS) -c $i -o $obj
+"
+done
+
+MKFILE="$MKFILE
+clean:
+\trm -rf _obj lib bin *.core _install"
+
+echo -e "$MKFILE" > Makefile
+
+# Configure the config.h
+
+if [ "$OS" = "Linux" -a "$LIBC" = "musl" ]; then
+    CRASHTRACE=0
+    COROUTINES=0
+fi
+
+CNF="#ifndef _KITSUNE_CONFIG_H_
+#define _KITSUNE_CONFIG_H_
+
+#define _$OS
+"
+
+if [ "$CRASHTRACE" -eq "1" ]; then
+    CNF="${CNF}#define FEATURE_CRASHTRACE
+"
+fi
+
+if [ "$COROUTINES" -eq "1" ]; then
+    CNF="${CNF}#define FEATURE_COROUTINES
+"
+fi
+
+CNF="${CNF}
+#endif"
+
+echo "$CNF" > include/kitsune/config.h
