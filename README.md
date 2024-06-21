@@ -4,6 +4,11 @@
 <img width="512" src="./character.png" />
 </p>
 <h3 align="center" style="font-size: 150%;">Mother of all LowByteFox C projects, useful C standard library</h3>
+<h2 align="center">Licensed under</h2>
+
+<p align="center">
+<img src="https://www.gnu.org/graphics/lgplv3-with-text-154x68.png" alt="GNU LGPLv3 official logo" />
+</p>
 
 ## Content
 - [x] Simpler Int Types
