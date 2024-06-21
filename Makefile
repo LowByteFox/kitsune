@@ -1,6 +1,6 @@
-CC = tcc
-AR = tcc -ar
-CFLAGS = -Wall -Wextra -std=c89 -Iinclude
+CC = gcc
+AR = ar
+CFLAGS = -Wall -Wextra -std=c89 -D_GNU_SOURCE -Iinclude
 LDFLAGS = 
 INCLDIR = include
 SRCDIR = src

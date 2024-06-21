@@ -323,8 +323,7 @@ start:
                 usize capacity = kitsune_map_capacity(ctx->map);
                 usize direction = iter->base.direction == ADDITION ? 1 : -1;
 
-                for (; ctx->pos < capacity && ctx->pos >= 0;
-                    ctx->pos += direction) {
+                for (; ctx->pos < capacity; ctx->pos += direction) {
                         struct kitsune_vec *current = ctx->map->items +
                             ctx->pos;
                         if (current->allocator == NULL) continue;

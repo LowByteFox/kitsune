@@ -28,9 +28,23 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 
-#ifdef KITSUNE_TARGET_BSD
+#ifdef FEATURE_CRASHTRACE
 #include <execinfo.h>
+
+#ifdef KITSUNE_TARGET_BSD
 #define TRACE_BIN "llvm-symbolizer"
+#elif defined(KITSUNE_TARGET_Linux)
+#define TRACE_BIN "addr2line"
+#endif
+#endif
+
+#ifdef KITSUNE_TARGET_Linux
+char**
+backtrace_symbols_fmt(void *arr, usize size, char *fmt)
+{
+        (void) fmt;
+        return backtrace_symbols(arr, size);
+}
 #endif
 
 void
@@ -116,11 +130,7 @@ handler(int sig)
 
         fprintf(stderr, "\n!!! Crashtrace recieved a signal: %s\n",
             strsignal(sig));
-#if KITSUNE_TARGET_BSD
         kitsune_print_backtrace(size, array, true);
-#else
-#error "Unknown platform, does it have backtrace? If yes, check and make PR"
-#endif
 #endif
         exit(1);
 }

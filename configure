@@ -111,8 +111,8 @@ if [ "$OS" = "Linux" ]; then
     LIBC=$(ldd --version 2>&1 | cut -d" " -f1 | head -n 1)
 
     if [ "$LIBC" = "ldd" ]; then
-        echo "GNU Libc is not yet supported by kitsune!" >&2
-        exit 1
+        LIBC="glibc"
+        CFLAGS="$CFLAGS -D_GNU_SOURCE"
     fi
 else
     case "$OS" in
@@ -219,7 +219,7 @@ MKFILE="$MKFILE
 clean:
 \trm -rf _obj lib bin *.core _install"
 
-echo -e "$MKFILE" > Makefile
+echo "$MKFILE" > Makefile
 
 # Configure the config.h
 
@@ -231,7 +231,7 @@ fi
 CNF="#ifndef _KITSUNE_CONFIG_H_
 #define _KITSUNE_CONFIG_H_
 
-#define _$OS
+#define KITSUNE_TARGET_$OS
 "
 
 if [ "$CRASHTRACE" -eq "1" ]; then

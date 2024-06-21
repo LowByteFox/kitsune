@@ -276,8 +276,7 @@ kitsune_runtime_choose_task(struct kitsune_runtime *rt)
         usize i = 0;
         for (; i < capacity; i++) {
                 task = rt->tasks + current;
-                if (task->status == RT_RUNNING ||
-                    task->status == TASK_CREATED)
+                if (task->status == TASK_CREATED)
                         return current;
                 current = (current + 1) % capacity;
         }
@@ -301,8 +300,7 @@ static void
 kitsune_runtime_stack_overflow(struct kitsune_runtime *rt)
 {
         struct kitsune_task *task = rt->tasks + rt->current;
-        usize size = ((usize) task->stack_start - (usize) &task);
-        size = (size < 0) ? -size : size;
+        usize size = ((isize) task->stack_start - (isize) &task);
 
         if (size > rt->stack_size - 32) {
                 fprintf(stderr, "*** stack overflow at task #%ld\n",

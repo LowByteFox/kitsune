@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#ifdef KITSUNE_TARGET_BSD
+#ifdef FEATURE_CRASHTRACE
 #include <execinfo.h>
 #endif
 

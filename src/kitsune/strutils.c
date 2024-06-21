@@ -17,6 +17,7 @@
  */
 
 #include <kitsune/allocator.h>
+#include <kitsune/config.h>
 #include <assert.h>
 #include <kitsune/numbers.h>
 #include <kitsune/memutils.h>
@@ -34,7 +35,6 @@ kitsune_stpcpy(char *dst, const char *src, usize n)
 {
 	assert(src != NULL);
 	assert(dst != NULL);
-	assert(n >= 0);
 
 	if (n != 0) {
 		char *d = dst;
@@ -119,7 +119,6 @@ kitsune_strdup(struct kitsune_allocator *allocator, char *src, usize maxlen)
 {
 	assert(allocator != NULL);
 	assert(src != NULL);
-	assert(maxlen > 0);
 
 	char *copy;
 	usize len;
@@ -138,7 +137,6 @@ char*
 kitsune_strchr(const char *p, i32 ch, usize maxlen)
 {
 	assert(p != NULL);
-	assert(maxlen > 0);
 
 	for (; maxlen > 0; p++, maxlen--) {
 		if (*p == (char) ch)
@@ -154,7 +152,6 @@ char*
 kitsune_strrchr(const char *p, i32 ch, usize maxlen)
 {
 	assert(p != NULL);
-	assert(maxlen > 0);
 
 	char *save;
 
@@ -172,7 +169,6 @@ char*
 kitsune_strchrnul(const char *p, i32 ch, usize maxlen)
 {
 	assert(p != NULL);
-	assert(maxlen > 0);
 
 	for (; maxlen > 0; p++, maxlen--) {
 		if (*p == (char) ch)
@@ -228,7 +224,6 @@ kitsune_strcasecmp(const char *s1, const char *s2, usize n)
 {
 	assert(s1 != NULL);
 	assert(s2 != NULL);
-	assert(n >= 0);
 	return strncasecmp(s1, s2, n);
 }
 
@@ -237,7 +232,6 @@ kitsune_strcasecmp_l(const char *s1, const char *s2, usize n, locale_t locale)
 {
 	assert(s1 != NULL);
 	assert(s2 != NULL);
-	assert(n >= 0);
 	return strncasecmp_l(s1, s2, n, locale);
 }
 
@@ -257,15 +251,17 @@ i32
 kitsune_strerror_r(i32 code, char *buffer, usize n)
 {
 	assert(buffer != NULL);
-	assert(n > 0);
+#ifdef KITSUNE_TARGET_BSD
 	return strerror_r(code, buffer, n);
+#elif defined(KITSUNE_TARGET_Linux)
+    return strerror_r(code, buffer, n) != NULL;
+#endif
 }
 
 i32
 kitsune_strerror_rl(i32 code, char *buffer, usize n, locale_t locale)
 {
 	assert(buffer != NULL);
-	assert(n > 0);
 	char *msg = strerror_l(code, locale);
 	if (msg == NULL)
 		return 1;
@@ -278,7 +274,6 @@ usize
 kitsune_strlen(const char *p, usize maxlen)
 {
 	assert(p != NULL);
-	assert(maxlen >= 0);
 	const char *cp = p;
 
 	for (; maxlen > 0 && *cp != 0; cp++, maxlen--)
@@ -311,7 +306,6 @@ char*
 kitsune_strsep(char **stringp, const char *delim, usize *maxlen)
 {
 	assert(maxlen != NULL);
-	assert(*maxlen > 0);
 
 	char *s;
 	const char *spanp;
@@ -359,8 +353,6 @@ cont:
 usize
 kitsune_strcspn(const char *s1, const char *s2, usize maxlen)
 {
-	assert(maxlen > 0);
-
 	const char *p, *spanp;
 	char c, sc;
 
@@ -381,7 +373,6 @@ kitsune_strstr(const char *s1, const char *s2, usize maxlen)
 {
 	assert(s1 != NULL);
 	assert(s2 != NULL);
-	assert(maxlen > 0);
 
 	char *res = strstr(s1, s2);
 	if (res != NULL && (usize) (res - s1) < maxlen) {
@@ -396,7 +387,6 @@ kitsune_strcasestr(const char *s, const char *find, usize maxlen)
 {
 	assert(s != NULL);
 	assert(find != NULL);
-	assert(maxlen > 0);
 
 	char *res = strcasestr(s, find);
 	if (res != NULL && (usize) (res - s) < maxlen) {
@@ -412,12 +402,15 @@ kitsune_strcasestr_l(const char *s, const char *find, usize maxlen,
 {
 	assert(s != NULL);
 	assert(find != NULL);
-	assert(maxlen > 0);
 	char *res = NULL;
 #if defined(__OpenBSD__)
+    (void) locale;
 	return kitsune_strcasestr(s, find, maxlen);
 #elif defined(__FreeBSD__)
 	res = strcasestr_l(s, find, locale);
+#elif defined(KITSUNE_TARGET_LINUX)
+    (void) locale;
+    return kitsune_strcasestr(s, find, maxlen);
 #endif
 	if (res != NULL && (usize) (res - s) < maxlen) {
 		return res;
@@ -579,7 +572,6 @@ kitsune_strxfrm(char *s1, const char *s2, usize maxlen)
 {
 	assert(s1 != NULL);
 	assert(s2 != NULL);
-	assert(maxlen > 0);
 	return strxfrm(s1, s2, maxlen);
 }
 
@@ -588,6 +580,5 @@ kitsune_strxfrm_l(char *s1, const char *s2, usize maxlen, locale_t locale)
 {
 	assert(s1 != NULL);
 	assert(s2 != NULL);
-	assert(maxlen > 0);
 	return strxfrm_l(s1, s2, maxlen, locale);
 }
